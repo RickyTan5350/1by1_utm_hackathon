@@ -26,7 +26,7 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white pb-24">
       {/* Header */}
-      <div className="relative bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-6 pt-12 pb-8 rounded-b-3xl shadow-lg">
+      <div className="relative bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-4 pt-12 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-1">
@@ -51,10 +51,10 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
       </div>
 
       {/* Overlay content under header (consistent with other pages) */}
-      <div className="px-6 -mt-6 relative z-10">
+      <div className="px-4 -mt-6 relative z-10">
         {/* Current Goal (moved from profile) */}
         <motion.div
-          className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-200 mb-6 shadow-sm"
+          className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-200 mb-5 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -85,7 +85,7 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
 
         {/* This Month - detailed breakdown (before recent activity) */}
         <motion.div
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6"
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
@@ -143,7 +143,7 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
 
         {/* Recent Activity (collapsible) */}
         <motion.div
-          className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm mb-6"
+          className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm mb-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.12 }}
@@ -204,7 +204,7 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
                 {onAddTransaction && (
                   <button
                     onClick={onAddTransaction}
-                    className="w-full mt-1 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl py-3 text-sm border border-gray-200 transition-colors"
+                    className="w-full mt-1 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl min-h-11 py-2 text-sm border border-gray-200 transition-colors"
                   >
                     Add Transaction
                   </button>
@@ -225,7 +225,7 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
             <h3 className="text-xs text-gray-500 uppercase tracking-wide mb-3">Action Items</h3>
             <div className="space-y-2">
               {canSaveMore && (
-                <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl p-4 border-l-4 border-yellow-500">
+                <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl p-3 border-l-4 border-yellow-500">
                   <div className="w-9 h-9 rounded-xl bg-yellow-500 text-white flex items-center justify-center flex-shrink-0">
                     <Target className="w-4 h-4" />
                   </div>
@@ -236,7 +236,7 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
                 </div>
               )}
               {topSpendingCategory && (
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border-l-4 border-blue-500">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 border-l-4 border-blue-500">
                   <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center flex-shrink-0">
                     <AlertTriangle className="w-4 h-4" />
                   </div>

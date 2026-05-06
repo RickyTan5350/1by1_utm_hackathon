@@ -31,7 +31,7 @@ export function ProfilePage({ userStats, goal, transactions, onAddTransaction, c
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-24">
       {/* Header */}
-      <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white px-6 pt-12 pb-8 rounded-b-3xl shadow-lg">
+      <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white px-4 pt-12 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-2xl">
             👤
@@ -63,10 +63,10 @@ export function ProfilePage({ userStats, goal, transactions, onAddTransaction, c
         </div>
       </div>
 
-      <div className="px-6 mt-6">
+      <div className="px-4 mt-5">
         {/* This Month Summary */}
         <motion.div
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6"
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}

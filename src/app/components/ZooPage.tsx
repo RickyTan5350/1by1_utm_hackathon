@@ -135,7 +135,7 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 pt-12 pb-8 rounded-b-3xl shadow-lg">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 pt-12 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl">My Zoo</h1>
@@ -167,7 +167,7 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
         </div>
       </div>
 
-      <div className="px-6 mt-6">
+      <div className="px-4 mt-5">
 
         {/* Collection Tab */}
         <AnimatePresence mode="wait">
@@ -213,7 +213,7 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
 
                     return (
                       <div>
-                        <div className="relative h-[56vh] min-h-[420px] max-h-[680px] overflow-hidden">
+                        <div className="relative h-[54vh] min-h-[380px] max-h-[620px] overflow-hidden">
                           <div className="absolute inset-0">
                             {!isMapImageBroken(currentMap?.id) ? (
                               <img
@@ -268,7 +268,7 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
                     setExpandedMilestones(true);
                     setActiveTab('collection');
                   }}
-                  className={`py-3 rounded-xl text-xs border transition-all ${
+                  className={`min-h-11 py-2 rounded-xl text-xs border transition-all ${
                     activeCollectionPanel === 'milestone'
                       ? 'bg-purple-500 text-white border-purple-500'
                       : 'bg-white text-gray-700 border-gray-200'
@@ -280,7 +280,7 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
                   onClick={() => {
                     setShowAnimalsModal(true);
                   }}
-                  className={`py-3 rounded-xl text-xs border transition-all ${
+                  className={`min-h-11 py-2 rounded-xl text-xs border transition-all ${
                     showAnimalsModal
                       ? 'bg-blue-500 text-white border-blue-500'
                       : 'bg-white text-gray-700 border-gray-200'
@@ -290,7 +290,7 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
                 </button>
                 <button
                   onClick={() => setShowCombosModal(true)}
-                  className={`py-3 rounded-xl text-xs border transition-all relative ${
+                  className={`min-h-11 py-2 rounded-xl text-xs border transition-all relative ${
                     showCombosModal
                       ? 'bg-yellow-500 text-white border-yellow-500'
                       : 'bg-white text-gray-700 border-gray-200'

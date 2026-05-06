@@ -43,7 +43,7 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-24">
       {/* Header */}
       <div
-        className={`bg-gradient-to-r ${theme.colors.gradient.from} ${theme.colors.gradient.to} text-white px-6 pt-12 pb-8 rounded-b-3xl shadow-lg`}
+        className={`bg-gradient-to-r ${theme.colors.gradient.from} ${theme.colors.gradient.to} text-white px-4 pt-12 pb-8 rounded-b-3xl shadow-lg`}
       >
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -107,10 +107,10 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
         </div>
       </div>
 
-      <div className="px-6 -mt-6">
+      <div className="px-4 -mt-6">
         {/* Goal Card */}
         <motion.div
-          className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6"
+          className="bg-white rounded-2xl shadow-lg overflow-hidden mb-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -131,7 +131,7 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
             </div>
           </div>
 
-          <div className="p-5">
+          <div className="p-4">
             <div className="flex items-end justify-between mb-3">
               <div>
                 <p className="text-2xl text-emerald-600">RM {goal.currentAmount.toLocaleString()}</p>
@@ -157,14 +157,14 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
 
         {/* Quick Actions */}
         <motion.div
-          className="grid grid-cols-2 gap-4 mb-6"
+          className="grid grid-cols-2 gap-3 mb-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
           <button
             onClick={onNavigateToAdd}
-            className="rounded-2xl p-5 shadow-lg hover:shadow-xl active:scale-95 transition-all"
+            className="rounded-2xl p-4 min-h-28 shadow-lg hover:shadow-xl active:scale-95 transition-all"
             style={{
               background: `linear-gradient(135deg, ${theme.colors.primary}, ${theme.colors.primaryDark})`
             }}
@@ -180,7 +180,7 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
 
           <button
             onClick={onNavigateToAdd}
-            className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 shadow-lg hover:shadow-xl active:scale-95 transition-all"
+            className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 min-h-28 shadow-lg hover:shadow-xl active:scale-95 transition-all"
           >
             <div className="flex items-center justify-center gap-2 mb-3">
               <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -194,7 +194,7 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
 
         {/* Stats Card */}
         <motion.div
-          className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6"
+          className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
@@ -224,7 +224,7 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
 
         {/* AI Insight Preview */}
         <motion.div
-          className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 shadow-sm border border-blue-100"
+          className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 shadow-sm border border-blue-100"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
