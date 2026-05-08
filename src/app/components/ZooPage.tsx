@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Lock, Coins, Trophy, Sparkles, Gift, CheckCircle, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Map } from 'lucide-react';
+import { Lock, Coins, Trophy, Sparkles, Gift, CheckCircle, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Map, X } from 'lucide-react';
 import { Animal, UserStats } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { animalCombos, getComboProgress, Combo } from '../data/combos';
@@ -68,6 +68,8 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
   const [activeCollectionPanel, setActiveCollectionPanel] = useState<'milestone' | 'animals'>('milestone');
   const [showCombosModal, setShowCombosModal] = useState(false);
   const [showAnimalsModal, setShowAnimalsModal] = useState(false);
+  const [showMilestoneModal, setShowMilestoneModal] = useState(false);
+  const [showSavingModal, setShowSavingModal] = useState(false);
   const [brokenMapImages, setBrokenMapImages] = useState<Record<string, boolean>>({});
   const [animalsModalToast, setAnimalsModalToast] = useState<{
     show: boolean;
@@ -135,30 +137,30 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 pt-12 pb-8 rounded-b-3xl shadow-lg">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 pt-6 pb-4 rounded-b-2xl shadow-lg">
+        <div className="flex items-center justify-between mb-2">
           <div>
-            <h1 className="text-2xl">My Zoo</h1>
-            <p className="text-blue-100 text-sm mt-1">
+            <h1 className="text-lg font-bold">My Zoo</h1>
+            <p className="text-blue-100 text-xs mt-0.5">
               {unlockedCount} of {animals.length} animals collected
             </p>
           </div>
           <div className="text-center">
-            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-2">
-              <Coins className="w-5 h-5 text-yellow-300" />
-              <span className="text-lg">{userStats.coins}</span>
+            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full mb-1">
+              <Coins className="w-4 h-4 text-yellow-300" />
+              <span className="text-sm">{userStats.coins}</span>
             </div>
-            <p className="text-xs text-blue-100">Available Coins</p>
+            <p className="text-[10px] text-blue-100">Coins</p>
           </div>
         </div>
 
         {/* Collection Progress */}
-        <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm">Collection Progress</span>
-            <span className="text-sm">{Math.round((unlockedCount / animals.length) * 100)}%</span>
+        <div className="bg-white/15 backdrop-blur-sm rounded-lg p-2">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs">Collection</span>
+            <span className="text-xs">{Math.round((unlockedCount / animals.length) * 100)}%</span>
           </div>
-          <div className="relative h-2 bg-white/20 rounded-full overflow-hidden">
+          <div className="relative h-1.5 bg-white/20 rounded-full overflow-hidden">
             <div
               className="absolute inset-y-0 left-0 bg-yellow-300 rounded-full transition-all duration-500"
               style={{ width: `${(unlockedCount / animals.length) * 100}%` }}
@@ -179,21 +181,7 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
             >
-              {/* Statistic cards */}
-              <div className="grid grid-cols-3 gap-3 mb-5 relative z-10">
-                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 text-center shadow-sm">
-                  <p className="text-2xl mb-1">{unlockedCount}</p>
-                  <p className="text-xs text-gray-500">Unlocked</p>
-                </div>
-                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 text-center shadow-sm">
-                  <p className="text-2xl mb-1">{animals.length - unlockedCount}</p>
-                  <p className="text-xs text-gray-500">Locked</p>
-                </div>
-                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 text-center shadow-sm">
-                  <p className="text-2xl mb-1">{animals.length}</p>
-                  <p className="text-xs text-gray-500">Total</p>
-                </div>
-              </div>
+
 
               {/* Big habitat stage */}
               <AnimatePresence mode="wait">
@@ -203,7 +191,7 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.3 }}
-                  className="-mx-6 -mt-24 mb-4 relative z-0"
+                  className="-mx-4 mt-3 mb-4 relative z-0"
                 >
                   {(() => {
                     const currentMap = zooMaps.find(m => m.id === selectedMap);
@@ -213,7 +201,7 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
 
                     return (
                       <div>
-                        <div className="relative h-[54vh] min-h-[380px] max-h-[620px] overflow-hidden">
+                        <div className="relative h-screen max-h-[90vh] overflow-hidden">
                           <div className="absolute inset-0">
                             {!isMapImageBroken(currentMap?.id) ? (
                               <img
@@ -244,7 +232,89 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
                             <ChevronRight className="w-5 h-5" />
                           </button>
 
-                          {/* Bottom overlay card removed per design */}
+                          <div className="absolute inset-x-4 bottom-4 z-[70] space-y-2">
+                            <div className="rounded-3xl bg-white/85 backdrop-blur-xl border border-white/80 p-3 shadow-2xl">
+                              <div className="flex flex-wrap items-center justify-between gap-2">
+                                <div>
+                                  <p className="text-[10px] uppercase tracking-[0.25em] text-slate-600">
+                                    Habitat
+                                  </p>
+                                  <p className="text-sm font-semibold text-slate-900">
+                                    {currentMap?.name ?? 'Habitat'}
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-2 rounded-full bg-slate-900/10 px-3 py-1 text-slate-900">
+                                  <Coins className="w-4 h-4 text-yellow-500" />
+                                  <span className="text-xs font-semibold">
+                                    {userStats.coins}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="mt-2 flex items-center justify-between gap-3 text-[10px] text-slate-500">
+                                <span>{unlockedInMap}/{mapAnimals.length} unlocked</span>
+                                <span>{completion}% collected</span>
+                              </div>
+                              <div className="h-1 rounded-full bg-slate-200 overflow-hidden mt-2">
+                                <div
+                                  className="h-full bg-emerald-500"
+                                  style={{ width: `${completion}%` }}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-4 gap-2">
+                              <motion.button
+                                onClick={() => setActiveTab('collection')}
+                                className={`flex flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-white/90 py-2 px-2 text-[10px] font-semibold text-slate-800 transition-all ${
+                                  activeTab === 'collection' ? 'ring-2 ring-emerald-300' : 'hover:bg-slate-100'
+                                }`}
+                                whileTap={{ scale: 0.96 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                              >
+                                <span className="text-lg">🌾</span>
+                                Farm
+                              </motion.button>
+
+                              <motion.button
+                                onClick={() => setShowMilestoneModal(true)}
+                                className={`relative flex flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-white/90 py-2 px-2 text-[10px] font-semibold text-slate-800 transition-all ${
+                                  showMilestoneModal ? 'ring-2 ring-yellow-300' : 'hover:bg-slate-100'
+                                }`}
+                                whileTap={{ scale: 0.96 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                              >
+                                <span className="text-lg">🏆</span>
+                                Trophies
+                                {readyCombos > 0 && (
+                                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-md">
+                                    {readyCombos}
+                                  </span>
+                                )}
+                              </motion.button>
+
+                              <motion.button
+                                onClick={() => setShowSavingModal(true)}
+                                className={`flex flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-white/90 py-2 px-2 text-[10px] font-semibold text-slate-800 transition-all ${
+                                  showSavingModal ? 'ring-2 ring-yellow-300' : 'hover:bg-slate-100'
+                                }`}
+                                whileTap={{ scale: 0.96 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                              >
+                                <span className="text-lg">💰</span>
+                                Savings
+                              </motion.button>
+
+                              <motion.button
+                                onClick={() => setShowAnimalsModal(true)}
+                                className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-white/90 py-2 px-2 text-[10px] font-semibold text-slate-800 transition-all hover:bg-slate-100"
+                                whileTap={{ scale: 0.96 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                              >
+                                <span className="text-lg">🐾</span>
+                                Animals
+                              </motion.button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     );
@@ -252,137 +322,9 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
                 </motion.div>
               </AnimatePresence>
 
-              {/* Description */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-200 mb-5 shadow-sm">
-                <p className="text-sm text-gray-900 mb-1">Habitat Description</p>
-                <p className="text-xs text-gray-600 leading-relaxed">
-                  Explore each habitat to discover unique animal groups. Swipe with the left and right buttons to move between scenes, then dive deeper through the action panels below.
-                </p>
-              </div>
+              {/* Milestone tracker moved to modal only */}
 
-              {/* Scroll-down panel buttons */}
-              <div className="grid grid-cols-3 gap-2 mb-4">
-                <button
-                  onClick={() => {
-                    setActiveCollectionPanel('milestone');
-                    setExpandedMilestones(true);
-                    setActiveTab('collection');
-                  }}
-                  className={`min-h-11 py-2 rounded-xl text-xs border transition-all ${
-                    activeCollectionPanel === 'milestone'
-                      ? 'bg-purple-500 text-white border-purple-500'
-                      : 'bg-white text-gray-700 border-gray-200'
-                  }`}
-                >
-                  Milestone
-                </button>
-                <button
-                  onClick={() => {
-                    setShowAnimalsModal(true);
-                  }}
-                  className={`min-h-11 py-2 rounded-xl text-xs border transition-all ${
-                    showAnimalsModal
-                      ? 'bg-blue-500 text-white border-blue-500'
-                      : 'bg-white text-gray-700 border-gray-200'
-                  }`}
-                >
-                  My Animals
-                </button>
-                <button
-                  onClick={() => setShowCombosModal(true)}
-                  className={`min-h-11 py-2 rounded-xl text-xs border transition-all relative ${
-                    showCombosModal
-                      ? 'bg-yellow-500 text-white border-yellow-500'
-                      : 'bg-white text-gray-700 border-gray-200'
-                  }`}
-                >
-                  Combos
-                  {readyCombos > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                      {readyCombos}
-                    </span>
-                  )}
-                </button>
-              </div>
 
-              {/* Milestone tracker */}
-              {activeCollectionPanel === 'milestone' && (
-                <div className="mb-4">
-                  <button
-                    onClick={() => setExpandedMilestones(!expandedMilestones)}
-                    className="w-full bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-200 flex items-center justify-between hover:from-purple-100 hover:to-pink-100 transition-colors"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Trophy className="w-5 h-5 text-purple-600" />
-                      <span className="text-sm text-purple-900">Milestone Unlocks</span>
-                    </div>
-                    {expandedMilestones ? (
-                      <ChevronUp className="w-5 h-5 text-purple-600" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-purple-600" />
-                    )}
-                  </button>
-
-                  <AnimatePresence>
-                    {expandedMilestones && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="bg-white rounded-b-2xl p-4 border-x border-b border-purple-100 space-y-2">
-                          {[500, 1000, 1500, 2000].map((milestone) => {
-                            const reached = userStats.totalSavings >= milestone;
-                            const milestoneAnimal = animals.find(
-                              a => a.unlockCondition.type === 'milestone' && a.unlockCondition.value === milestone
-                            );
-                            return (
-                              <div key={milestone} className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-lg ${
-                                    reached ? 'bg-purple-50' : 'bg-gray-50 grayscale opacity-60'
-                                  }`}>
-                                    {milestoneAnimal?.emoji || '🎁'}
-                                  </div>
-                                  <span className={`text-sm ${reached ? 'text-purple-900' : 'text-gray-500'}`}>
-                                    RM {milestone}
-                                  </span>
-                                </div>
-                                <div className={`text-xs px-2 py-1 rounded-full ${
-                                  reached ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-                                }`}>
-                                  {reached ? '✓ Unlocked' : 'Locked'}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              )}
-
-              {/* Animal habitat selector */}
-              {/* (My Animals / Combos 已改为弹层，页面不再渲染此面板，避免“土2”内容出现) */}
-
-              {/* Helpful Tip */}
-              <motion.div
-                className="mt-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-200"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-              >
-                <div className="flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm text-blue-900 mb-1">Pro Tip!</p>
-                    <p className="text-xs text-blue-700">Check the Combos tab to see bonus rewards for collecting specific animal sets!</p>
-                  </div>
-                </div>
-              </motion.div>
             </motion.div>
           )}
 
@@ -768,6 +710,150 @@ export function ZooPage({ animals, userStats, onUnlockAnimal, claimedCombos = []
         animalName={unlockCelebration.name}
         onClose={() => setUnlockCelebration({ ...unlockCelebration, show: false })}
       />
+
+      {/* Milestone Modal - Bottom Sheet */}
+      <AnimatePresence>
+        {showMilestoneModal && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+              onClick={() => setShowMilestoneModal(false)}
+            />
+
+            {/* Bottom Sheet */}
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md rounded-t-3xl border-t border-white/30 shadow-2xl max-h-[80vh] overflow-hidden"
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="w-6 h-6 text-purple-600" />
+                    <h2 className="text-lg font-semibold text-gray-900">Milestone Unlocks</h2>
+                  </div>
+                  <button
+                    onClick={() => setShowMilestoneModal(false)}
+                    className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <p className="text-sm text-gray-600 mb-4">
+                  Unlock animals by reaching savings milestones
+                </p>
+
+                <div className="space-y-3 max-h-[50vh] overflow-y-auto">
+                  {[500, 1000, 1500, 2000].map((milestone) => {
+                    const reached = userStats.totalSavings >= milestone;
+                    const milestoneAnimal = animals.find(
+                      a => a.unlockCondition.type === 'milestone' && a.unlockCondition.value === milestone
+                    );
+                    return (
+                      <div key={milestone} className="flex items-center justify-between p-4 bg-white/80 rounded-xl border border-gray-200/50 backdrop-blur-sm">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl ${
+                      reached ? 'bg-purple-50' : 'bg-gray-100 grayscale opacity-60'
+                    }`}>
+                      {milestoneAnimal?.emoji || '🎁'}
+                    </div>
+                    <div>
+                      <p className={`text-sm font-semibold ${reached ? 'text-purple-900' : 'text-gray-500'}`}>
+                        RM {milestone}
+                      </p>
+                      <p className={`text-xs ${reached ? 'text-purple-700' : 'text-gray-400'}`}>
+                        {milestoneAnimal?.name || 'Unknown'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className={`text-xs px-3 py-1 rounded-full font-semibold ${
+                    reached ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {reached ? '✓ Unlocked' : 'Locked'}
+                  </div>
+                </div>
+              );
+                  })}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Saving Modal - Bottom Sheet */}
+      <AnimatePresence>
+        {showSavingModal && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+              onClick={() => setShowSavingModal(false)}
+            />
+
+            {/* Bottom Sheet */}
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md rounded-t-3xl border-t border-white/30 shadow-2xl max-h-[60vh] overflow-hidden"
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">💰</span>
+                    <h2 className="text-lg font-semibold text-gray-900">Add Savings</h2>
+                  </div>
+                  <button
+                    onClick={() => setShowSavingModal(false)}
+                    className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-4">
+                      Track your savings progress and unlock new animals!
+                    </p>
+                    <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-6 py-4 rounded-xl">
+                      <p className="text-sm opacity-90">Current Savings</p>
+                      <p className="text-2xl font-bold">RM {userStats.totalSavings}</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-xl">
+                    <p className="text-sm text-gray-600 text-center">
+                      Use the main app to add new savings transactions
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Animal Unlock Celebration */}
+      <AnimalUnlockCelebration
+        show={unlockCelebration.show}
+        animalEmoji={unlockCelebration.emoji}
+        animalName={unlockCelebration.name}
+        onClose={() => setUnlockCelebration({ ...unlockCelebration, show: false })}
+      />
+
     </div>
   );
 }

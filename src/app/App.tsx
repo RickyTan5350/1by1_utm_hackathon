@@ -24,7 +24,43 @@ export default function App() {
   const [userStats, setUserStats] = useState<UserStats>(mockUserStats);
   const [claimedCombos, setClaimedCombos] = useState<string[]>([]);
   const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [depositAmount, setDepositAmount] = useState('');
   const [theme, setTheme] = useState('emerald');
+
+  const applySavingsDeposit = (amount: number) => {
+    const transaction: Transaction = {
+      id: Date.now().toString(),
+      type: 'saving',
+      amount,
+      category: 'Deposit',
+      date: new Date().toISOString().split('T')[0],
+      description: 'Saving account deposit',
+    };
+
+    setTransactions(prev => [transaction, ...prev]);
+
+    setUserStats(prev => ({
+      ...prev,
+      totalSavings: prev.totalSavings + amount,
+      coins: prev.coins + Math.floor(amount * 10),
+    }));
+
+    mockGoal.currentAmount += amount;
+
+    setAnimals(prev =>
+      prev.map(animal => {
+        if (
+          animal.unlockCondition.type === 'milestone' &&
+          animal.unlockCondition.value <= userStats.totalSavings + amount &&
+          !animal.isUnlocked
+        ) {
+          return { ...animal, isUnlocked: true };
+        }
+        return animal;
+      })
+    );
+  };
 
   const handleAddTransaction = (newTransaction: {
     type: 'expense' | 'saving';
@@ -32,51 +68,39 @@ export default function App() {
     category: string;
     description: string;
   }) => {
-    const transaction: Transaction = {
-      id: Date.now().toString(),
-      type: newTransaction.type,
-      amount: newTransaction.amount,
-      category: newTransaction.category,
-      date: new Date().toISOString().split('T')[0],
-      description: newTransaction.description,
-    };
-
-    setTransactions([transaction, ...transactions]);
-
-    // Update user stats
     if (newTransaction.type === 'saving') {
-      const coinsEarned = Math.floor(newTransaction.amount * 10);
-      setUserStats({
-        ...userStats,
-        totalSavings: userStats.totalSavings + newTransaction.amount,
-        coins: userStats.coins + coinsEarned,
-      });
-
-      // Update goal progress
-      mockGoal.currentAmount += newTransaction.amount;
-
-      // Check milestone unlocks
-      const milestoneAnimals = animals.map(animal => {
-        if (
-          animal.unlockCondition.type === 'milestone' &&
-          animal.unlockCondition.value <= userStats.totalSavings + newTransaction.amount &&
-          !animal.isUnlocked
-        ) {
-          return { ...animal, isUnlocked: true };
-        }
-        return animal;
-      });
-      setAnimals(milestoneAnimals);
+      applySavingsDeposit(newTransaction.amount);
     } else {
-      setUserStats({
-        ...userStats,
-        totalSpending: userStats.totalSpending + newTransaction.amount,
-      });
+      const transaction: Transaction = {
+        id: Date.now().toString(),
+        type: newTransaction.type,
+        amount: newTransaction.amount,
+        category: newTransaction.category,
+        date: new Date().toISOString().split('T')[0],
+        description: newTransaction.description,
+      };
+      setTransactions(prev => [transaction, ...prev]);
+      setUserStats(prev => ({
+        ...prev,
+        totalSpending: prev.totalSpending + newTransaction.amount,
+      }));
     }
 
     // Close modal and navigate to home
     setShowAddTransaction(false);
     setTimeout(() => setCurrentPage('home'), 500);
+  };
+
+  const handleDepositSubmit = () => {
+    const amount = Number(depositAmount);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return;
+    }
+
+    applySavingsDeposit(amount);
+    setDepositAmount('');
+    setShowDepositModal(false);
+    setCurrentPage('home');
   };
 
   const handleCheckIn = () => {
@@ -123,7 +147,7 @@ export default function App() {
 
   return (
     <div
-      className="max-w-md mx-auto bg-white min-h-screen relative"
+      className="max-w-md mx-auto bg-[#071623] min-h-screen relative overflow-hidden"
       style={{
         '--theme-primary': currentTheme.colors.primary,
         '--theme-primary-dark': currentTheme.colors.primaryDark,
@@ -133,11 +157,9 @@ export default function App() {
     >
       {currentPage === 'home' && (
         <HomePage
-          goal={mockGoal}
           userStats={userStats}
           topInsight={mockAIInsights[0]}
-          onNavigateToAdd={() => setShowAddTransaction(true)}
-          onCheckIn={handleCheckIn}
+          onOpenDeposit={() => setShowDepositModal(true)}
           theme={currentTheme}
         />
       )}
@@ -193,7 +215,50 @@ export default function App() {
         </div>
       )}
 
-      <BottomNav currentPage={currentPage} onNavigate={setCurrentPage} />
+      {showDepositModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
+          <div className="absolute inset-0 overflow-y-auto">
+            <div className="min-h-screen flex items-end sm:items-center justify-center">
+              <div className="w-full max-w-md rounded-t-3xl sm:rounded-3xl border border-white/10 bg-slate-900 p-6 text-white shadow-2xl">
+                <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-white/20 sm:hidden" />
+                <h2 className="text-lg font-semibold">Deposit to savings</h2>
+                <p className="mt-2 text-sm text-slate-300">How much do you want to deposit?</p>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={depositAmount}
+                  onChange={(event) => setDepositAmount(event.target.value)}
+                  placeholder="e.g. 100"
+                  className="mt-4 w-full rounded-2xl border border-white/15 bg-slate-800 px-4 py-3 text-white outline-none focus:border-white/30"
+                />
+                <div className="mt-5 grid grid-cols-2 gap-2 pb-2">
+                  <button
+                    onClick={() => {
+                      setShowDepositModal(false);
+                      setDepositAmount('');
+                    }}
+                    className="rounded-2xl border border-white/20 px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/5"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDepositSubmit}
+                    className="rounded-2xl bg-white/15 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/25"
+                  >
+                    Deposit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-4 pb-4">
+        <BottomNav currentPage={currentPage} onNavigate={setCurrentPage} />
+      </div>
+
     </div>
   );
 }
