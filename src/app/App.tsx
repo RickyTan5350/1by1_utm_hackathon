@@ -3,6 +3,7 @@ import { HomePage } from './components/HomePage';
 import { ZooPage } from './components/ZooPage';
 import { InsightsPage } from './components/InsightsPage';
 import { AddTransactionPage } from './components/AddTransactionPage';
+import { AddDepositPage } from './components/AddDepositPage.tsx';
 import { ProfilePage } from './components/ProfilePage';
 import { BottomNav } from './components/BottomNav';
 import {
@@ -14,7 +15,6 @@ import {
   mockSpendingBreakdown
 } from './data/mockData';
 import { Transaction, Animal, UserStats } from './types';
-import { animalCombos, getComboProgress } from './data/combos';
 import { getTheme } from './data/themes';
 
 export default function App() {
@@ -22,12 +22,40 @@ export default function App() {
   const [transactions, setTransactions] = useState<Transaction[]>(mockTransactions);
   const [animals, setAnimals] = useState<Animal[]>(mockAnimals);
   const [userStats, setUserStats] = useState<UserStats>(mockUserStats);
-  const [claimedCombos, setClaimedCombos] = useState<string[]>([]);
-  const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const [showSendMoney, setShowSendMoney] = useState(false);
+  const [showAddDeposit, setShowAddDeposit] = useState(false);
   const [theme, setTheme] = useState('emerald');
 
   const handleAddTransaction = (newTransaction: {
-    type: 'expense' | 'saving';
+    type: 'expense' | 'transfer';
+    amount: number;
+    category: string;
+    recipient?: string;
+    description: string;
+  }) => {
+    const transaction: Transaction = {
+      id: Date.now().toString(),
+      type: newTransaction.type,
+      amount: newTransaction.amount,
+      category: newTransaction.type === 'transfer' ? newTransaction.recipient ?? 'Transfer' : newTransaction.category,
+      recipient: newTransaction.recipient,
+      date: new Date().toISOString().split('T')[0],
+      description: newTransaction.description,
+    };
+
+    setTransactions([transaction, ...transactions]);
+
+    const nextStats = { ...userStats };
+    nextStats.totalSpending += newTransaction.amount;
+    nextStats.walletBalance = Math.max(0, nextStats.walletBalance - newTransaction.amount);
+
+    setUserStats(nextStats);
+    setShowSendMoney(false);
+    setTimeout(() => setCurrentPage('home'), 500);
+  };
+
+  const handleAddDeposit = (newTransaction: {
+    type: 'deposit' | 'fixedDeposit';
     amount: number;
     category: string;
     description: string;
@@ -43,39 +71,30 @@ export default function App() {
 
     setTransactions([transaction, ...transactions]);
 
-    // Update user stats
-    if (newTransaction.type === 'saving') {
-      const coinsEarned = Math.floor(newTransaction.amount * 10);
-      setUserStats({
-        ...userStats,
-        totalSavings: userStats.totalSavings + newTransaction.amount,
-        coins: userStats.coins + coinsEarned,
-      });
-
-      // Update goal progress
-      mockGoal.currentAmount += newTransaction.amount;
-
-      // Check milestone unlocks
-      const milestoneAnimals = animals.map(animal => {
-        if (
-          animal.unlockCondition.type === 'milestone' &&
-          animal.unlockCondition.value <= userStats.totalSavings + newTransaction.amount &&
-          !animal.isUnlocked
-        ) {
-          return { ...animal, isUnlocked: true };
-        }
-        return animal;
-      });
-      setAnimals(milestoneAnimals);
+    const nextStats = { ...userStats };
+    nextStats.totalSavings += newTransaction.amount;
+    if (newTransaction.type === 'deposit') {
+      nextStats.walletBalance += newTransaction.amount;
     } else {
-      setUserStats({
-        ...userStats,
-        totalSpending: userStats.totalSpending + newTransaction.amount,
-      });
+      nextStats.fixedDepositBalance += newTransaction.amount;
     }
+    mockGoal.currentAmount += newTransaction.amount;
 
-    // Close modal and navigate to home
-    setShowAddTransaction(false);
+    setUserStats(nextStats);
+
+    const milestoneAnimals = animals.map(animal => {
+      if (
+        animal.unlockCondition.type === 'milestone' &&
+        animal.unlockCondition.value <= nextStats.totalSavings &&
+        !animal.isUnlocked
+      ) {
+        return { ...animal, isUnlocked: true };
+      }
+      return animal;
+    });
+    setAnimals(milestoneAnimals);
+
+    setShowAddDeposit(false);
     setTimeout(() => setCurrentPage('home'), 500);
   };
 
@@ -83,7 +102,6 @@ export default function App() {
     setUserStats({
       ...userStats,
       streak: userStats.streak + 1,
-      coins: userStats.coins + Math.min(userStats.streak + 1, 30), // Increasing coin reward up to 30
     });
   };
 
@@ -91,33 +109,21 @@ export default function App() {
     const animal = animals.find(a => a.id === animalId);
     if (!animal) return;
 
-    if (animal.unlockCondition.type === 'coins' && userStats.coins >= animal.unlockCondition.value) {
+    if (
+      animal.unlockCondition.type === 'milestone' &&
+      userStats.totalSavings >= animal.unlockCondition.value
+    ) {
       setAnimals(animals.map(a =>
         a.id === animalId ? { ...a, isUnlocked: true } : a
       ));
       setUserStats({
         ...userStats,
-        coins: userStats.coins - animal.unlockCondition.value,
         animalsCollected: userStats.animalsCollected + 1,
       });
     }
   };
 
-  const handleClaimCombo = (comboId: string) => {
-    const combo = animalCombos.find(c => c.id === comboId);
-    if (!combo) return;
 
-    const unlockedAnimalIds = animals.filter(a => a.isUnlocked).map(a => a.id);
-    const progress = getComboProgress(combo, unlockedAnimalIds);
-
-    if (progress.completed && !claimedCombos.includes(comboId)) {
-      setClaimedCombos([...claimedCombos, comboId]);
-      setUserStats({
-        ...userStats,
-        coins: userStats.coins + combo.reward.value,
-      });
-    }
-  };
 
   const currentTheme = getTheme(theme);
 
@@ -134,9 +140,11 @@ export default function App() {
       {currentPage === 'home' && (
         <HomePage
           goal={mockGoal}
+          animals={animals}
           userStats={userStats}
           topInsight={mockAIInsights[0]}
-          onNavigateToAdd={() => setShowAddTransaction(true)}
+          onNavigateToDeposit={() => setShowAddDeposit(true)}
+          onNavigateToTransaction={() => setShowSendMoney(true)}
           onCheckIn={handleCheckIn}
           theme={currentTheme}
         />
@@ -147,8 +155,6 @@ export default function App() {
           animals={animals}
           userStats={userStats}
           onUnlockAnimal={handleUnlockAnimal}
-          claimedCombos={claimedCombos}
-          onClaimCombo={handleClaimCombo}
         />
       )}
 
@@ -159,7 +165,7 @@ export default function App() {
           userStats={userStats}
           goal={mockGoal}
           transactions={transactions}
-          onAddTransaction={() => setShowAddTransaction(true)}
+          onAddTransaction={() => setShowSendMoney(true)}
         />
       )}
 
@@ -168,25 +174,43 @@ export default function App() {
           userStats={userStats}
           goal={mockGoal}
           transactions={transactions}
-          onAddTransaction={() => setShowAddTransaction(true)}
+          onAddTransaction={() => setShowSendMoney(true)}
           currentTheme={theme}
           onThemeChange={setTheme}
         />
       )}
 
-      {/* Add Transaction Modal */}
-      {showAddTransaction && (
+      {/* Send Money Modal */}
+      {showSendMoney && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
           <div className="absolute inset-0 overflow-y-auto">
             <div className="min-h-screen flex items-end sm:items-center justify-center">
               <div className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl">
                 <button
-                  onClick={() => setShowAddTransaction(false)}
+                  onClick={() => setShowSendMoney(false)}
                   className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
                 >
                   ✕
                 </button>
                 <AddTransactionPage onAddTransaction={handleAddTransaction} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAddDeposit && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
+          <div className="absolute inset-0 overflow-y-auto">
+            <div className="min-h-screen flex items-end sm:items-center justify-center">
+              <div className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl">
+                <button
+                  onClick={() => setShowAddDeposit(false)}
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
+                >
+                  ✕
+                </button>
+                <AddDepositPage goal={mockGoal} onAddDeposit={handleAddDeposit} />
               </div>
             </div>
           </div>

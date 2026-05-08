@@ -1,111 +1,82 @@
-import { useState } from 'react';
-import { DollarSign, TrendingDown, TrendingUp, ShoppingBag, Utensils, Film, Car, Home, Tag } from 'lucide-react';
+import { useState, FormEvent } from 'react';
+import { DollarSign, User, TrendingDown } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface AddTransactionPageProps {
   onAddTransaction: (transaction: {
-    type: 'expense' | 'saving';
+    type: 'expense' | 'transfer';
     amount: number;
     category: string;
+    recipient?: string;
     description: string;
   }) => void;
 }
 
-const expenseCategories = [
-  { id: 'food', name: 'Food', icon: Utensils, color: 'bg-green-500' },
-  { id: 'shopping', name: 'Shopping', icon: ShoppingBag, color: 'bg-blue-500' },
-  { id: 'entertainment', name: 'Entertainment', icon: Film, color: 'bg-amber-500' },
-  { id: 'transport', name: 'Transport', icon: Car, color: 'bg-purple-500' },
-  { id: 'housing', name: 'Housing', icon: Home, color: 'bg-red-500' },
-  { id: 'other', name: 'Other', icon: Tag, color: 'bg-gray-500' },
-];
-
 export function AddTransactionPage({ onAddTransaction }: AddTransactionPageProps) {
-  const [type, setType] = useState<'expense' | 'saving'>('expense');
   const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState('food');
+  const [recipient, setRecipient] = useState('');
   const [description, setDescription] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (!amount || parseFloat(amount) <= 0) {
+    if (!amount || parseFloat(amount) <= 0 || !recipient.trim()) {
       return;
     }
 
     onAddTransaction({
-      type,
+      type: 'transfer',
       amount: parseFloat(amount),
-      category: type === 'saving' ? 'Savings' : category,
-      description
+      category: 'Transfer',
+      recipient: recipient.trim(),
+      description,
     });
 
-    // Show success animation
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 2000);
-
-    // Reset form
     setAmount('');
+    setRecipient('');
     setDescription('');
   };
 
   return (
     <div className="bg-white pb-8">
-      {/* Header */}
       <div className="px-6 pt-6 pb-4">
-        <h1 className="text-2xl text-gray-900 mb-2">Add Transaction</h1>
-        <p className="text-sm text-gray-500">Track your spending and savings</p>
+        <h1 className="text-2xl text-gray-900 mb-2">Send Money</h1>
+        <p className="text-sm text-gray-500">Transfer funds to someone and keep your wallet current.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="px-6">
-        {/* Type Toggle */}
         <motion.div
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 mb-6 grid grid-cols-2 gap-2"
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <button
-            type="button"
-            onClick={() => setType('expense')}
-            className={`py-3 rounded-xl transition-all ${
-              type === 'expense'
-                ? 'bg-red-500 text-white shadow-md'
-                : 'text-gray-600 hover:bg-gray-50'
-            }`}
-          >
-            <div className="flex items-center justify-center gap-2">
-              <TrendingDown className="w-5 h-5" />
-              <span className="text-sm">Expense</span>
+          <label className="text-xs text-gray-500 uppercase tracking-wide mb-3 block">Recipient</label>
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center">
+              <User className="w-5 h-5 text-slate-500" />
             </div>
-          </button>
-          <button
-            type="button"
-            onClick={() => setType('saving')}
-            className={`py-3 rounded-xl transition-all ${
-              type === 'saving'
-                ? 'bg-emerald-500 text-white shadow-md'
-                : 'text-gray-600 hover:bg-gray-50'
-            }`}
-          >
-            <div className="flex items-center justify-center gap-2">
-              <TrendingUp className="w-5 h-5" />
-              <span className="text-sm">Saving</span>
-            </div>
-          </button>
+            <input
+              type="text"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              placeholder="Recipient name or account"
+              className="flex-1 text-base bg-transparent outline-none text-gray-900"
+              required
+            />
+          </div>
         </motion.div>
 
-        {/* Amount Input */}
         <motion.div
           className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <label className="text-xs text-gray-500 uppercase tracking-wide mb-3 block">
-            Amount (RM)
-          </label>
+          <label className="text-xs text-gray-500 uppercase tracking-wide mb-3 block">Amount (RM)</label>
           <div className="flex items-center gap-2">
             <DollarSign className="w-6 h-6 text-gray-400" />
             <input
@@ -120,82 +91,34 @@ export function AddTransactionPage({ onAddTransaction }: AddTransactionPageProps
           </div>
         </motion.div>
 
-        {/* Category Selection (Expenses Only) */}
-        {type === 'expense' && (
-          <motion.div
-            className="mb-6"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <label className="text-xs text-gray-500 uppercase tracking-wide mb-3 block">
-              Category
-            </label>
-            <div className="grid grid-cols-3 gap-3">
-              {expenseCategories.map((cat) => {
-                const IconComponent = cat.icon;
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setCategory(cat.id)}
-                    className={`bg-white rounded-2xl p-4 shadow-sm border-2 transition-all ${
-                      category === cat.id
-                        ? 'border-emerald-500 ring-2 ring-emerald-200'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className={`w-10 h-10 rounded-full ${cat.color} flex items-center justify-center mx-auto mb-2`}>
-                      <IconComponent className="w-5 h-5 text-white" />
-                    </div>
-                    <p className="text-xs text-gray-700 text-center">{cat.name}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Description */}
         <motion.div
           className="mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
         >
-          <label className="text-xs text-gray-500 uppercase tracking-wide mb-3 block">
-            Description (Optional)
-          </label>
+          <label className="text-xs text-gray-500 uppercase tracking-wide mb-3 block">Note (Optional)</label>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="e.g., Lunch at cafe"
+            placeholder="e.g., Rent transfer"
             className="w-full bg-white rounded-2xl shadow-sm border border-gray-100 px-4 py-4 text-sm text-gray-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
           />
         </motion.div>
 
-        {/* Submit Button */}
         <motion.button
           type="submit"
-          disabled={!amount || parseFloat(amount) <= 0}
-          className={`w-full py-4 rounded-2xl shadow-lg transition-all ${
-            type === 'expense'
-              ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-              : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700'
-          } text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+          disabled={!amount || parseFloat(amount) <= 0 || !recipient.trim()}
+          className="w-full py-4 rounded-2xl shadow-lg transition-all bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
           whileTap={{ scale: 0.98 }}
         >
-          <span className="text-sm">
-            {type === 'expense' ? 'Add Expense' : 'Add Savings'}
-          </span>
+          <span className="text-sm">Send Money</span>
         </motion.button>
 
-        {/* Success Animation Placeholder */}
         {showSuccess && (
           <motion.div
             className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm z-50 pointer-events-none"
@@ -204,43 +127,20 @@ export function AddTransactionPage({ onAddTransaction }: AddTransactionPageProps
             exit={{ opacity: 0 }}
           >
             <motion.div
-            className="bg-white rounded-3xl shadow-2xl p-8 text-center"
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', duration: 0.5 }}
-          >
-              <div className={`w-16 h-16 rounded-full ${
-                type === 'expense' ? 'bg-red-100' : 'bg-emerald-100'
-              } flex items-center justify-center mx-auto mb-3`}>
-                {type === 'expense' ? (
-                  <TrendingDown className="w-8 h-8 text-red-600" />
-                ) : (
-                  <TrendingUp className="w-8 h-8 text-emerald-600" />
-                )}
+              className="bg-white rounded-3xl shadow-2xl p-8 text-center"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', duration: 0.5 }}
+            >
+              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-3">
+                <TrendingDown className="w-8 h-8 text-blue-600" />
               </div>
-              <p className="text-lg text-gray-900">Transaction Added!</p>
-              <p className="text-sm text-gray-500 mt-1">
-                {type === 'expense' ? '-' : '+'}RM {amount}
-              </p>
+              <p className="text-lg text-gray-900">Money Sent!</p>
+              <p className="text-sm text-gray-500 mt-1">-RM {amount}</p>
             </motion.div>
           </motion.div>
         )}
       </form>
-
-      {/* Coin Earning Info */}
-      {type === 'saving' && (
-        <motion.div
-          className="mt-6 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-2xl p-5 border border-yellow-200"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.4 }}
-        >
-          <p className="text-sm text-yellow-900 mb-2">💰 Earn Coins from Savings!</p>
-          <p className="text-xs text-yellow-700">
-            For every RM 1 saved, you earn 10 coins to unlock animals in your zoo
-          </p>
-        </motion.div>
-      )}
     </div>
   );
 }

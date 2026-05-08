@@ -92,7 +92,7 @@ export function CelebrationModal({ show, message, reward, emoji, onClose }: Cele
           transition={{ delay: 0.3, type: 'spring' }}
         >
           <Gift className="w-6 h-6 mx-auto mb-2" />
-          <p className="text-2xl">+{reward} Coins</p>
+          <p className="text-2xl">+RM {reward}</p>
         </motion.div>
 
         <button

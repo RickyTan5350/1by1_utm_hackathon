@@ -178,12 +178,14 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                        transaction.type === 'saving' ? 'bg-emerald-100' : 'bg-red-100'
+                        transaction.type === 'deposit' || transaction.type === 'fixedDeposit'
+                          ? 'bg-emerald-100'
+                          : 'bg-red-100'
                       }`}>
-                        {transaction.type === 'saving' ? (
-                          <TrendingUp className="w-4 h-4 text-emerald-700" />
-                        ) : (
+                        {transaction.type === 'expense' ? (
                           <TrendingDown className="w-4 h-4 text-red-700" />
+                        ) : (
+                          <TrendingUp className="w-4 h-4 text-emerald-700" />
                         )}
                       </div>
                       <div className="min-w-0">
@@ -192,9 +194,11 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
                       </div>
                     </div>
                     <p className={`text-sm flex-shrink-0 ${
-                      transaction.type === 'saving' ? 'text-emerald-700' : 'text-red-700'
+                      transaction.type === 'deposit' || transaction.type === 'fixedDeposit'
+                        ? 'text-emerald-700'
+                        : 'text-red-700'
                     }`}>
-                      {transaction.type === 'saving' ? '+' : '-'}RM {transaction.amount.toFixed(0)}
+                      {transaction.type === 'deposit' || transaction.type === 'fixedDeposit' ? '+' : '-'}RM {transaction.amount.toFixed(0)}
                     </p>
                   </div>
                 ))}
@@ -206,7 +210,7 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
                     onClick={onAddTransaction}
                     className="w-full mt-1 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl min-h-11 py-2 text-sm border border-gray-200 transition-colors"
                   >
-                    Add Transaction
+                    Send Money
                   </button>
                 )}
               </div>

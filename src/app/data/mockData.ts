@@ -11,26 +11,17 @@ export const mockGoal: Goal = {
 
 export const mockTransactions: Transaction[] = [
   { id: '1', type: 'expense', amount: 25.50, category: 'Food', date: '2026-05-05', description: 'Lunch at cafe' },
-  { id: '2', type: 'saving', amount: 200, category: 'Savings', date: '2026-05-05' },
+  { id: '2', type: 'deposit', amount: 200, category: 'Deposit', date: '2026-05-05' },
   { id: '3', type: 'expense', amount: 80, category: 'Shopping', date: '2026-05-04', description: 'New shoes' },
   { id: '4', type: 'expense', amount: 15, category: 'Entertainment', date: '2026-05-04', description: 'Movie ticket' },
   { id: '5', type: 'expense', amount: 45.80, category: 'Food', date: '2026-05-03', description: 'Groceries' },
-  { id: '6', type: 'saving', amount: 150, category: 'Savings', date: '2026-05-03' },
+  { id: '6', type: 'fixedDeposit', amount: 150, category: 'Fixed Deposit', date: '2026-05-03' },
 ];
 
 export const mockAnimals: Animal[] = [
-  { id: '1', name: 'Sheep', emoji: '🐑', unlockCondition: { type: 'coins', value: 50 }, isUnlocked: true, rarity: 'common' },
-  { id: '2', name: 'Cow', emoji: '🐄', unlockCondition: { type: 'coins', value: 100 }, isUnlocked: true, rarity: 'common' },
-  { id: '3', name: 'Chicken', emoji: '🐔', unlockCondition: { type: 'coins', value: 80 }, isUnlocked: true, rarity: 'common' },
-  { id: '4', name: 'Pig', emoji: '🐷', unlockCondition: { type: 'coins', value: 120 }, isUnlocked: false, rarity: 'common' },
-  { id: '5', name: 'Horse', emoji: '🐴', unlockCondition: { type: 'milestone', value: 500 }, isUnlocked: false, rarity: 'rare' },
-  { id: '6', name: 'Panda', emoji: '🐼', unlockCondition: { type: 'milestone', value: 1000 }, isUnlocked: false, rarity: 'rare' },
-  { id: '7', name: 'Lion', emoji: '🦁', unlockCondition: { type: 'milestone', value: 2000 }, isUnlocked: false, rarity: 'epic' },
-  { id: '8', name: 'Elephant', emoji: '🐘', unlockCondition: { type: 'coins', value: 200 }, isUnlocked: false, rarity: 'rare' },
-  { id: '9', name: 'Rabbit', emoji: '🐰', unlockCondition: { type: 'coins', value: 60 }, isUnlocked: false, rarity: 'common' },
-  { id: '10', name: 'Fox', emoji: '🦊', unlockCondition: { type: 'coins', value: 150 }, isUnlocked: false, rarity: 'rare' },
-  { id: '11', name: 'Bear', emoji: '🐻', unlockCondition: { type: 'milestone', value: 1500 }, isUnlocked: false, rarity: 'epic' },
-  { id: '12', name: 'Penguin', emoji: '🐧', unlockCondition: { type: 'coins', value: 90 }, isUnlocked: false, rarity: 'common' },
+  { id: 'cat1', name: 'Cat 1', emoji: '🐱', unlockCondition: { type: 'milestone', value: 2500 }, isUnlocked: false, rarity: 'common' },
+  { id: 'cat2', name: 'Cat 2', emoji: '🐈', unlockCondition: { type: 'milestone', value: 5000 }, isUnlocked: false, rarity: 'rare' },
+  { id: 'cat3', name: 'Cat 3', emoji: '😺', unlockCondition: { type: 'milestone', value: 10000 }, isUnlocked: false, rarity: 'epic' },
 ];
 
 export const mockAIInsights: AIInsight[] = [
@@ -71,9 +62,11 @@ export const mockAIInsights: AIInsight[] = [
 export const mockUserStats: UserStats = {
   totalSavings: 2340,
   totalSpending: 856.30,
-  coins: 245,
+  coins: 0,
   streak: 7,
-  animalsCollected: 3
+  animalsCollected: 0,
+  walletBalance: 1140,
+  fixedDepositBalance: 1200
 };
 
 export const mockSpendingBreakdown: SpendingBreakdown[] = [

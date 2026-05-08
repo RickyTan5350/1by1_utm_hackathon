@@ -9,9 +9,10 @@ export interface Goal {
 
 export interface Transaction {
   id: string;
-  type: 'expense' | 'saving';
+  type: 'expense' | 'deposit' | 'fixedDeposit' | 'transfer';
   amount: number;
   category: string;
+  recipient?: string;
   date: string;
   description?: string;
 }
@@ -43,6 +44,8 @@ export interface UserStats {
   coins: number;
   streak: number;
   animalsCollected: number;
+  walletBalance: number;
+  fixedDepositBalance: number;
 }
 
 export interface SpendingBreakdown {
