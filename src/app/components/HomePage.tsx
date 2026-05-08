@@ -4,6 +4,7 @@ import { Goal, UserStats, AIInsight, Animal } from '../types';
 import { motion } from 'motion/react';
 import { StreakCelebration } from './StreakCelebration';
 import { ColorTheme } from '../data/themes';
+import { ChromakeyVideo } from './ChromakeyVideo';
 
 interface HomePageProps {
   goal: Goal;
@@ -111,18 +112,21 @@ export function HomePage({ goal, animals, userStats, topInsight, onNavigateToDep
       </div>
 
       <div className="px-4 -mt-6">
-        {/* Featured Animal */}
+        {/* Featured Animal Mockup Style */}
         <motion.div
-          className="bg-white rounded-2xl shadow-lg overflow-hidden mb-5"
+          className="bg-black p-2 rounded-[2rem] shadow-lg mb-5 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="rounded-3xl overflow-hidden border border-slate-200">
-            <img
-              src="/img/grass.jpg"
-              alt="Grass spotlight"
-              className="w-full h-60 object-cover"
+          <div 
+            className="relative h-60 rounded-[1.5rem] overflow-hidden bg-repeat"
+            style={{ backgroundImage: 'url("/img/grasspix.jpg")', backgroundSize: '200px' }}
+          >
+            <ChromakeyVideo
+              src="/img/cat_move.mp4"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20"
+              threshold={230}
             />
           </div>
         </motion.div>
