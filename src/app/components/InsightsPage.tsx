@@ -15,7 +15,8 @@ interface InsightsPageProps {
 export function InsightsPage({ insights, spendingBreakdown, userStats, goal, transactions, onAddTransaction }: InsightsPageProps) {
   const [expandedRecent, setExpandedRecent] = useState(false);
   const transferTotal = transactions.filter(t => t.type === 'transfer').reduce((sum, t) => sum + t.amount, 0);
-  const totalSpent = spendingBreakdown.reduce((sum, item) => sum + item.amount, 0) + transferTotal;
+  const baseTotalSpent = spendingBreakdown.reduce((sum, item) => sum + item.amount, 0);
+  const totalSpent = baseTotalSpent + transferTotal;
   const savingsRate = totalSpent > 0 ? (userStats.totalSavings / (userStats.totalSavings + totalSpent)) * 100 : 0;
 
   const topSpendingCategory = spendingBreakdown[0];
