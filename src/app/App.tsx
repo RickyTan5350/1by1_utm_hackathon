@@ -54,6 +54,30 @@ export default function App() {
     setTimeout(() => setCurrentPage('home'), 500);
   };
 
+  const handleAddSpending = (newTransaction: {
+    amount: number;
+    category: string;
+    description: string;
+  }) => {
+    const transaction: Transaction = {
+      id: Date.now().toString(),
+      type: 'expense',
+      amount: newTransaction.amount,
+      category: newTransaction.category,
+      date: new Date().toISOString().split('T')[0],
+      description: newTransaction.description,
+    };
+
+    setTransactions([transaction, ...transactions]);
+
+    const nextStats = { ...userStats };
+    nextStats.totalSpending += newTransaction.amount;
+    nextStats.walletBalance = Math.max(0, nextStats.walletBalance - newTransaction.amount);
+    nextStats.streak += 1;
+
+    setUserStats(nextStats);
+  };
+
   const handleAddDeposit = (newTransaction: {
     type: 'deposit' | 'fixedDeposit';
     amount: number;
@@ -98,13 +122,6 @@ export default function App() {
     setTimeout(() => setCurrentPage('home'), 500);
   };
 
-  const handleCheckIn = () => {
-    setUserStats({
-      ...userStats,
-      streak: userStats.streak + 1,
-    });
-  };
-
   const handleUnlockAnimal = (animalId: string) => {
     const animal = animals.find(a => a.id === animalId);
     if (!animal) return;
@@ -145,7 +162,7 @@ export default function App() {
           topInsight={mockAIInsights[0]}
           onNavigateToDeposit={() => setShowAddDeposit(true)}
           onNavigateToTransaction={() => setShowSendMoney(true)}
-          onCheckIn={handleCheckIn}
+          onAddSpending={handleAddSpending}
           theme={currentTheme}
         />
       )}
@@ -184,8 +201,8 @@ export default function App() {
       {showSendMoney && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
           <div className="absolute inset-0 overflow-y-auto">
-            <div className="min-h-screen flex items-end sm:items-center justify-center">
-              <div className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl">
+            <div className="min-h-screen flex items-end sm:items-center justify-center py-10">
+              <div className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
                 <button
                   onClick={() => setShowSendMoney(false)}
                   className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
@@ -202,8 +219,8 @@ export default function App() {
       {showAddDeposit && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
           <div className="absolute inset-0 overflow-y-auto">
-            <div className="min-h-screen flex items-end sm:items-center justify-center">
-              <div className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl">
+            <div className="min-h-screen flex items-end sm:items-center justify-center py-10">
+              <div className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
                 <button
                   onClick={() => setShowAddDeposit(false)}
                   className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"

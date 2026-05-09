@@ -99,7 +99,7 @@ export function ZooPage({ animals, userStats, onUnlockAnimal }: ZooPageProps) {
               <p className="text-sm text-gray-500 mt-1">Only these three heroes can be claimed by savings milestones.</p>
             </div>
             <div className="text-right text-sm text-gray-500">
-              <div>{animals.length - unlockedCount} animals remaining</div>
+              <div>{animals.length - unlockedCount} heroes remaining</div>
             </div>
           </div>
 
@@ -166,8 +166,8 @@ export function ZooPage({ animals, userStats, onUnlockAnimal }: ZooPageProps) {
           <div className="flex items-start gap-3">
             <Sparkles className="w-5 h-5 text-blue-600 mt-1" />
             <div>
-              <p className="text-sm font-semibold text-blue-800">Simple Zoo View</p>
-              <p className="text-xs text-blue-700">This page now focuses on the progress bar and the animal claim list only.</p>
+              <p className="text-sm font-semibold text-blue-800">Simple Hero View</p>
+              <p className="text-xs text-blue-700">This page now focuses on the progress bar and the hero claim list only.</p>
             </div>
           </div>
         </div>
