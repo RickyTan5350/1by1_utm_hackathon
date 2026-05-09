@@ -1,17 +1,15 @@
 import { motion } from 'motion/react';
-import { Flame, Coins } from 'lucide-react';
+import { Flame } from 'lucide-react';
 
 interface StreakCelebrationProps {
   show: boolean;
   streak: number;
-  coinsEarned: number;
   onClose: () => void;
 }
 
-export function StreakCelebration({ show, streak, coinsEarned, onClose }: StreakCelebrationProps) {
+export function StreakCelebration({ show, streak, onClose }: StreakCelebrationProps) {
   if (!show) return null;
 
-  // Auto close after 2 seconds
   setTimeout(onClose, 2000);
 
   return (
@@ -35,10 +33,7 @@ export function StreakCelebration({ show, streak, coinsEarned, onClose }: Streak
           </motion.div>
           <div>
             <p className="text-lg">Day {streak} Streak! 🔥</p>
-            <div className="flex items-center gap-2 text-yellow-200 text-sm">
-              <Coins className="w-4 h-4" />
-              <span>+{coinsEarned} coins earned!</span>
-            </div>
+            <p className="text-sm text-orange-100">Keep building your Hero Center progress.</p>
           </div>
         </div>
       </div>

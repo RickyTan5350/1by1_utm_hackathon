@@ -1,34 +1,32 @@
 import { useState } from 'react';
-import { Target, TrendingUp, Coins, Flame, Sparkles, Plus, TrendingDown } from 'lucide-react';
-import { Goal, UserStats, AIInsight } from '../types';
+import { TrendingUp, Flame, Sparkles, TrendingDown } from 'lucide-react';
+import { Goal, UserStats, AIInsight, Animal } from '../types';
 import { motion } from 'motion/react';
 import { StreakCelebration } from './StreakCelebration';
 import { ColorTheme } from '../data/themes';
+import { ChromakeyVideo } from './ChromakeyVideo';
 
 interface HomePageProps {
   goal: Goal;
+  animals: Animal[];
   userStats: UserStats;
   topInsight: AIInsight;
-  onNavigateToAdd?: () => void;
+  onNavigateToDeposit?: () => void;
+  onNavigateToTransaction?: () => void;
   onCheckIn?: () => void;
   theme: ColorTheme;
 }
 
-export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheckIn, theme }: HomePageProps) {
+export function HomePage({ goal, animals, userStats, topInsight, onNavigateToDeposit, onNavigateToTransaction, onCheckIn, theme }: HomePageProps) {
   const [showStreakCelebration, setShowStreakCelebration] = useState(false);
-  const [lastStreak, setLastStreak] = useState(userStats.streak);
 
   const progressPercentage = (goal.currentAmount / goal.targetAmount) * 100;
 
   const handleCheckIn = () => {
-    const newStreak = userStats.streak + 1;
-    const coinsEarned = Math.min(newStreak, 30);
-    setLastStreak(userStats.streak);
-    onCheckIn?.();
     setShowStreakCelebration(true);
+    onCheckIn?.();
   };
 
-  // Streak fire colors based on streak level
   const getStreakFireColor = (streak: number) => {
     if (streak >= 30) return { color: 'text-purple-300', glow: 'drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]', bg: 'from-purple-500 to-purple-600' };
     if (streak >= 21) return { color: 'text-blue-300', glow: 'drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]', bg: 'from-blue-500 to-blue-600' };
@@ -38,6 +36,10 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
   };
 
   const streakStyle = getStreakFireColor(userStats.streak);
+  const featuredAnimal =
+    animals.find(animal => !animal.isUnlocked && !animal.name.toLowerCase().includes('pig')) ??
+    animals.find(animal => !animal.isUnlocked) ??
+    animals[0];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-24">
@@ -48,15 +50,17 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
         <div className="flex items-center justify-between mb-6">
           <div>
             <p className="text-emerald-100 text-sm">Welcome back!</p>
-            <h1 className="text-2xl mt-1">ZooSave</h1>
+            <h1 className="text-2xl mt-1">My Wallet</h1>
           </div>
           <motion.div
             className="flex items-center gap-3 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full"
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
           >
-            <Coins className="w-5 h-5 text-yellow-300" />
-            <span className="text-lg">{userStats.coins}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs uppercase tracking-[0.2em] text-white/70">Wallet</span>
+              <p className="text-lg font-semibold">RM {userStats.walletBalance.toLocaleString()}</p>
+            </div>
           </motion.div>
         </div>
 
@@ -108,50 +112,22 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
       </div>
 
       <div className="px-4 -mt-6">
-        {/* Goal Card */}
+        {/* Featured Animal Mockup Style */}
         <motion.div
-          className="bg-white rounded-2xl shadow-lg overflow-hidden mb-5"
+          className="bg-black p-2 rounded-[2rem] shadow-lg mb-5 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="relative h-40">
-            <img
-              src={goal.imageUrl}
-              alt={goal.name}
-              className="w-full h-full object-cover"
+          <div 
+            className="relative h-60 rounded-[1.5rem] overflow-hidden bg-repeat"
+            style={{ backgroundImage: 'url("/img/grasspix.jpg")', backgroundSize: '200px' }}
+          >
+            <ChromakeyVideo
+              src="/img/cat_move.mp4"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20"
+              threshold={230}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-4 left-4 text-white">
-              <div className="flex items-center gap-2 mb-1">
-                <Target className="w-4 h-4" />
-                <span className="text-xs uppercase tracking-wide opacity-90">Current Goal</span>
-              </div>
-              <h2 className="text-xl">{goal.name}</h2>
-            </div>
-          </div>
-
-          <div className="p-4">
-            <div className="flex items-end justify-between mb-3">
-              <div>
-                <p className="text-2xl text-emerald-600">RM {goal.currentAmount.toLocaleString()}</p>
-                <p className="text-sm text-gray-500">of RM {goal.targetAmount.toLocaleString()}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-2xl">{Math.round(progressPercentage)}%</p>
-                <p className="text-xs text-gray-500">{goal.estimatedDays} days left</p>
-              </div>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="relative h-3 bg-gray-100 rounded-full overflow-hidden">
-              <motion.div
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(progressPercentage, 100)}%` }}
-                transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
-              />
-            </div>
           </div>
         </motion.div>
 
@@ -163,7 +139,7 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
           transition={{ duration: 0.4, delay: 0.1 }}
         >
           <button
-            onClick={onNavigateToAdd}
+            onClick={onNavigateToDeposit}
             className="rounded-2xl p-4 min-h-28 shadow-lg hover:shadow-xl active:scale-95 transition-all"
             style={{
               background: `linear-gradient(135deg, ${theme.colors.primary}, ${theme.colors.primaryDark})`
@@ -174,12 +150,12 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
                 <TrendingUp className="w-6 h-6 text-white" />
               </div>
             </div>
-            <p className="text-white text-sm mb-1">Add Saving</p>
-            <p className="text-white/80 text-xs">Earn coins & grow zoo</p>
+            <p className="text-white text-sm mb-1">Add Deposit</p>
+            <p className="text-white/80 text-xs">Grow your wallet</p>
           </button>
 
           <button
-            onClick={onNavigateToAdd}
+            onClick={onNavigateToTransaction}
             className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 min-h-28 shadow-lg hover:shadow-xl active:scale-95 transition-all"
           >
             <div className="flex items-center justify-center gap-2 mb-3">
@@ -187,8 +163,8 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
                 <TrendingDown className="w-6 h-6 text-white" />
               </div>
             </div>
-            <p className="text-white text-sm mb-1">Add Expense</p>
-            <p className="text-blue-100 text-xs">Track your spending</p>
+            <p className="text-white text-sm mb-1">Send Money</p>
+            <p className="text-blue-100 text-xs">Transfer funds to someone</p>
           </button>
         </motion.div>
 
@@ -244,11 +220,9 @@ export function HomePage({ goal, userStats, topInsight, onNavigateToAdd, onCheck
         </motion.div>
       </div>
 
-      {/* Streak Celebration */}
       <StreakCelebration
         show={showStreakCelebration}
         streak={userStats.streak}
-        coinsEarned={Math.min(userStats.streak, 30)}
         onClose={() => setShowStreakCelebration(false)}
       />
     </div>

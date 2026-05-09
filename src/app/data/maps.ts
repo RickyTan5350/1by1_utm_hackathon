@@ -20,7 +20,7 @@ export const zooMaps: ZooMap[] = [
     animalIds: ['1', '2', '3', '4'], // Sheep, Cow, Chicken, Pig
     color: { from: 'from-green-400', to: 'to-green-600' },
     // Put images in /public/img and reference as /img/...
-    imageUrl: '/img/grassland.jpg'
+    imageUrl: '/img/grass.jpg'
   },
   {
     id: 'desert',

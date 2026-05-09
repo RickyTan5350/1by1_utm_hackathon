@@ -1,4 +1,4 @@
-import { User, TrendingUp, TrendingDown, Calendar, Coins, Trophy, Flame, Settings, LogOut, ChevronRight } from 'lucide-react';
+import { User, TrendingUp, TrendingDown, Calendar, Trophy, Flame, Settings, LogOut, ChevronRight } from 'lucide-react';
 import { UserStats, Goal, Transaction } from '../types';
 import { motion } from 'motion/react';
 import { ThemeSwitcher } from './ThemeSwitcher';
@@ -25,7 +25,7 @@ export function ProfilePage({ userStats, goal, transactions, onAddTransaction, c
     .reduce((sum, t) => sum + t.amount, 0);
 
   const monthlySaved = thisMonthTransactions
-    .filter(t => t.type === 'saving')
+    .filter(t => t.type === 'deposit' || t.type === 'fixedDeposit')
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
@@ -51,9 +51,9 @@ export function ProfilePage({ userStats, goal, transactions, onAddTransaction, c
             <p className="text-xs text-gray-300">Day Streak</p>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-            <Coins className="w-5 h-5 mx-auto mb-1 text-yellow-300" />
-            <p className="text-lg">{userStats.coins}</p>
-            <p className="text-xs text-gray-300">Coins</p>
+            <Trophy className="w-5 h-5 mx-auto mb-1 text-purple-300" />
+            <p className="text-lg">RM {userStats.walletBalance.toLocaleString()}</p>
+            <p className="text-xs text-gray-300">Wallet Balance</p>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
             <Trophy className="w-5 h-5 mx-auto mb-1 text-purple-300" />

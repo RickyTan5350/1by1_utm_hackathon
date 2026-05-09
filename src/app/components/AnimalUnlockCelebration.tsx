@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Sparkles, Coins } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface AnimalUnlockCelebrationProps {
   show: boolean;
