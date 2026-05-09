@@ -29,9 +29,9 @@ export function ProfilePage({ userStats, goal, transactions, onAddTransaction, c
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24">
       {/* Header */}
-      <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white px-4 pt-12 pb-8 rounded-b-3xl shadow-lg">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 pt-12 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-2xl">
             👤
@@ -58,7 +58,7 @@ export function ProfilePage({ userStats, goal, transactions, onAddTransaction, c
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
             <Trophy className="w-5 h-5 mx-auto mb-1 text-purple-300" />
             <p className="text-lg">{userStats.animalsCollected}</p>
-            <p className="text-xs text-gray-300">Animals</p>
+            <p className="text-xs text-gray-300">Heroes</p>
           </div>
         </div>
       </div>

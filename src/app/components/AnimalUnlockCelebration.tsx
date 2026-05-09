@@ -35,7 +35,7 @@ export function AnimalUnlockCelebration({ show, animalEmoji, animalName, onClose
             {animalEmoji}
           </motion.div>
           <p className="text-lg text-gray-900 mb-1">Unlocked!</p>
-          <p className="text-sm text-emerald-600">{animalName} joined your zoo! 🎉</p>
+          <p className="text-sm text-blue-600">{animalName} joined your heroes! 🎉</p>
         </div>
       </div>
     </motion.div>

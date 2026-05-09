@@ -19,9 +19,9 @@ export const mockTransactions: Transaction[] = [
 ];
 
 export const mockAnimals: Animal[] = [
-  { id: 'cat1', name: 'Cat 1', emoji: '🐱', unlockCondition: { type: 'milestone', value: 2500 }, isUnlocked: false, rarity: 'common' },
-  { id: 'cat2', name: 'Cat 2', emoji: '🐈', unlockCondition: { type: 'milestone', value: 5000 }, isUnlocked: false, rarity: 'rare' },
-  { id: 'cat3', name: 'Cat 3', emoji: '😺', unlockCondition: { type: 'milestone', value: 10000 }, isUnlocked: false, rarity: 'epic' },
+  { id: 'cat1', name: 'Nova', emoji: '🌟', unlockCondition: { type: 'milestone', value: 2500 }, isUnlocked: false, rarity: 'common' },
+  { id: 'cat2', name: 'Blaze', emoji: '🔥', unlockCondition: { type: 'milestone', value: 5000 }, isUnlocked: false, rarity: 'rare' },
+  { id: 'cat3', name: 'Shadow', emoji: '🌙', unlockCondition: { type: 'milestone', value: 10000 }, isUnlocked: false, rarity: 'epic' },
 ];
 
 export const mockAIInsights: AIInsight[] = [
@@ -60,7 +60,7 @@ export const mockAIInsights: AIInsight[] = [
 ];
 
 export const mockUserStats: UserStats = {
-  totalSavings: 2340,
+  totalSavings: 2500,
   totalSpending: 856.30,
   coins: 0,
   streak: 7,

@@ -92,7 +92,7 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white pb-24">
       {/* Header */}
-      <div className="relative bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-4 pt-12 pb-8 rounded-b-3xl shadow-lg">
+      <div className="relative bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 pt-12 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-1">
@@ -118,38 +118,65 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
 
       {/* Overlay content under header (consistent with other pages) */}
       <div className="px-4 -mt-6 relative z-10">
-        {/* Current Goal (moved from profile) */}
+        {/* Personalized AI Recommendation Button */}
         <motion.div
-          className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-200 mb-5 shadow-sm"
+          className="mb-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="flex items-center justify-between gap-4">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <Target className="w-4 h-4 text-indigo-600" />
-                <p className="text-xs text-indigo-700 uppercase tracking-wide">Current Goal</p>
-              </div>
-              <p className="text-base text-indigo-900 truncate">{goal.name}</p>
-              <p className="text-xs text-indigo-700 mt-1">
-                RM {goal.currentAmount.toLocaleString()} / RM {goal.targetAmount.toLocaleString()}
-              </p>
+          <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-5 shadow-lg text-white">
+            <div className="flex items-center gap-3 mb-3">
+              <Sparkles className="w-6 h-6 text-yellow-300" />
+              <h3 className="font-semibold text-lg">Personalized AI Coach</h3>
             </div>
-            <div className="text-right flex-shrink-0">
-              <p className="text-lg text-indigo-900">{Math.round(goalProgress)}%</p>
-              <p className="text-xs text-indigo-700">{goal.estimatedDays} days</p>
-            </div>
-          </div>
-          <div className="mt-3 h-2 bg-white/60 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-indigo-600 to-blue-500 rounded-full transition-all duration-500"
-              style={{ width: `${goalProgress}%` }}
-            />
+            {!aiRecommendation ? (
+               <div>
+                 <p className="text-indigo-100 text-sm mb-4">
+                   Get a customized financial review based on your recent spending, savings, and transfers.
+                 </p>
+                 <button 
+                   onClick={handleGenerateRecommendation}
+                   disabled={isGeneratingAi}
+                   className="w-full bg-white text-indigo-600 rounded-xl py-3 font-medium flex items-center justify-center gap-2 hover:bg-indigo-50 transition-colors disabled:opacity-80"
+                 >
+                   {isGeneratingAi ? (
+                     <>
+                       <div className="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                       Analyzing your finances...
+                     </>
+                   ) : (
+                     'Generate Recommendation'
+                   )}
+                 </button>
+               </div>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20"
+              >
+                <div className="mb-3">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-200">Summary</span>
+                  <p className="text-sm mt-1">{aiRecommendation.summary}</p>
+                </div>
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-200">Suggestion</span>
+                  <p className="text-sm mt-1 font-medium text-yellow-100">{aiRecommendation.suggestion}</p>
+                </div>
+                <button 
+                  onClick={() => setAiRecommendation(null)}
+                  className="mt-4 text-xs text-indigo-200 hover:text-white flex items-center gap-1"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  Regenerate
+                </button>
+              </motion.div>
+            )}
           </div>
         </motion.div>
 
-        {/* This Month - detailed breakdown (before recent activity) */}
+        {/* Current Goal (moved from profile) */}
         <motion.div
           className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-5"
           initial={{ opacity: 0, y: 20 }}
