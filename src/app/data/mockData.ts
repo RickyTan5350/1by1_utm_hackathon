@@ -28,34 +28,34 @@ export const mockAIInsights: AIInsight[] = [
   {
     id: '1',
     type: 'warning',
-    category: 'Food',
-    message: 'Food spending is 40% above your average',
-    actionable: 'Try meal prepping 2-3 times per week to reduce dining out costs',
-    icon: 'alert-circle'
+    category: 'Shopping',
+    message: "Whoa there! Your shopping spree is 65% higher than last week's budget.",
+    actionable: "Try the '48-hour rule': wait two full days before checking out. You'll often find you don't actually need the item!",
+    icon: 'shopping-bag'
   },
   {
     id: '2',
     type: 'suggestion',
     category: 'Savings',
-    message: 'You can reach your goal 12 days faster',
-    actionable: 'Save an additional RM50 per week by reducing entertainment expenses',
+    message: 'You can reach your MacBook goal 12 days faster!',
+    actionable: 'By redirecting just RM50 from non-essential shopping to your goal, you hit your target by next month.',
     icon: 'trending-up'
   },
   {
     id: '3',
     type: 'achievement',
     category: 'Streak',
-    message: '7-day login streak! Keep it up!',
-    actionable: 'Continue daily tracking to earn +7 bonus coins',
+    message: '7-day login streak! Your discipline is paying off.',
+    actionable: 'Consistent tracking is the first step to financial freedom. Keep it up!',
     icon: 'award'
   },
   {
     id: '4',
     type: 'suggestion',
-    category: 'Shopping',
-    message: 'Shopping category exceeded budget',
-    actionable: 'Set a weekly limit of RM100 for non-essential purchases',
-    icon: 'shopping-bag'
+    category: 'Food',
+    message: 'Dining out is eating into your savings.',
+    actionable: 'Consider meal prepping on Sundays to save an average of RM120 per week.',
+    icon: 'coffee'
   },
 ];
 

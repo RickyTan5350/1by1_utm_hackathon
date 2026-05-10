@@ -25,6 +25,17 @@ export default function App() {
   const [showSendMoney, setShowSendMoney] = useState(false);
   const [showAddDeposit, setShowAddDeposit] = useState(false);
   const [theme, setTheme] = useState('emerald');
+  const [insights, setInsights] = useState<AIInsight[]>(mockAIInsights);
+
+  const triggerInsights = (category: string, amount: number) => {
+    if (category === 'Shopping' && amount > 100) {
+      const shoppingInsight = insights.find(i => i.category === 'Shopping');
+      if (shoppingInsight) {
+        const otherInsights = insights.filter(i => i.category !== 'Shopping');
+        setInsights([shoppingInsight, ...otherInsights]);
+      }
+    }
+  };
 
   const handleAddTransaction = (newTransaction: {
     type: 'expense' | 'transfer';
@@ -50,6 +61,7 @@ export default function App() {
     nextStats.walletBalance = Math.max(0, nextStats.walletBalance - newTransaction.amount);
 
     setUserStats(nextStats);
+    triggerInsights(newTransaction.category, newTransaction.amount);
     setShowSendMoney(false);
     setTimeout(() => setCurrentPage('home'), 500);
   };
@@ -76,6 +88,7 @@ export default function App() {
     nextStats.streak += 1;
 
     setUserStats(nextStats);
+    triggerInsights(newTransaction.category, newTransaction.amount);
   };
 
   const handleAddDeposit = (newTransaction: {
@@ -159,7 +172,7 @@ export default function App() {
           goal={mockGoal}
           animals={animals}
           userStats={userStats}
-          topInsight={mockAIInsights[0]}
+          topInsight={insights[0]}
           onNavigateToDeposit={() => setShowAddDeposit(true)}
           onNavigateToTransaction={() => setShowSendMoney(true)}
           onAddSpending={handleAddSpending}
@@ -177,7 +190,7 @@ export default function App() {
 
       {currentPage === 'insights' && (
         <InsightsPage
-          insights={mockAIInsights}
+          insights={insights}
           spendingBreakdown={mockSpendingBreakdown}
           userStats={userStats}
           goal={mockGoal}
