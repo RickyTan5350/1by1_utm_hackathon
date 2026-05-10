@@ -4,7 +4,7 @@ export const mockGoal: Goal = {
   id: '1',
   name: 'Buy MacBook Pro',
   targetAmount: 5000,
-  currentAmount: 2340,
+  currentAmount: 2500,
   imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop',
   estimatedDays: 45
 };
@@ -19,7 +19,7 @@ export const mockTransactions: Transaction[] = [
 ];
 
 export const mockAnimals: Animal[] = [
-  { id: 'cat1', name: 'Nova', emoji: '🌟', unlockCondition: { type: 'milestone', value: 2500 }, isUnlocked: false, rarity: 'common' },
+  { id: 'cat1', name: 'Nova', emoji: '🌟', unlockCondition: { type: 'milestone', value: 2500 }, isUnlocked: true, rarity: 'common' },
   { id: 'cat2', name: 'Blaze', emoji: '🔥', unlockCondition: { type: 'milestone', value: 5000 }, isUnlocked: false, rarity: 'rare' },
   { id: 'cat3', name: 'Shadow', emoji: '🌙', unlockCondition: { type: 'milestone', value: 10000 }, isUnlocked: false, rarity: 'epic' },
 ];
@@ -64,7 +64,7 @@ export const mockUserStats: UserStats = {
   totalSpending: 856.30,
   coins: 0,
   streak: 7,
-  animalsCollected: 0,
+  animalsCollected: 1,
   walletBalance: 1140,
   fixedDepositBalance: 1200
 };

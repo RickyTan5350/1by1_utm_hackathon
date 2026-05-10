@@ -24,7 +24,7 @@ export function HomePage({ goal, animals, userStats, topInsight, onNavigateToDep
   const [spendingAmount, setSpendingAmount] = useState('');
   const [spendingDescription, setSpendingDescription] = useState('');
 
-  const progressPercentage = (goal.currentAmount / goal.targetAmount) * 100;
+  const progressPercentage = (userStats.totalSavings / goal.targetAmount) * 100;
 
   const handleAddSpending = () => {
     const amount = parseFloat(spendingAmount);

@@ -97,9 +97,9 @@ export default function App() {
 
     const nextStats = { ...userStats };
     nextStats.totalSavings += newTransaction.amount;
-    if (newTransaction.type === 'deposit') {
-      nextStats.walletBalance += newTransaction.amount;
-    } else {
+    nextStats.walletBalance = Math.max(0, nextStats.walletBalance - newTransaction.amount);
+    
+    if (newTransaction.type === 'fixedDeposit') {
       nextStats.fixedDepositBalance += newTransaction.amount;
     }
     mockGoal.currentAmount += newTransaction.amount;

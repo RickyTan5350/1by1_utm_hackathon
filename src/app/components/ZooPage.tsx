@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Sparkles, Trophy } from 'lucide-react';
+import { Sparkles, Trophy, Shield, Star, Lock } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Animal, UserStats } from '../types';
 import { CelebrationModal } from './CelebrationModal';
 import { AnimalUnlockCelebration } from './AnimalUnlockCelebration';
@@ -16,28 +17,14 @@ export function ZooPage({ animals, userStats, onUnlockAnimal }: ZooPageProps) {
     return animal.unlockCondition.type === 'milestone' && userStats.totalSavings >= animal.unlockCondition.value;
   };
 
-  const getRarityColor = (rarity: string) => {
+  const getRarityStyles = (rarity: string) => {
     switch (rarity) {
-      case 'common': return 'bg-gray-100 text-gray-700 border-gray-200';
-      case 'rare': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'epic': return 'bg-purple-100 text-purple-700 border-purple-200';
-      default: return 'bg-gray-100 text-gray-700 border-gray-200';
+      case 'common': return 'from-slate-400 to-slate-500 shadow-slate-200/50';
+      case 'rare': return 'from-blue-400 to-indigo-600 shadow-blue-300/50';
+      case 'epic': return 'from-purple-500 to-fuchsia-600 shadow-purple-400/50';
+      default: return 'from-slate-400 to-slate-500';
     }
   };
-
-  const getAnimalImage = (animalId: string) => `/img/${animalId}.jpg`;
-
-  const [celebrationData, setCelebrationData] = useState<{
-    show: boolean;
-    message: string;
-    reward: number;
-    emoji: string;
-  }>({
-    show: false,
-    message: '',
-    reward: 0,
-    emoji: ''
-  });
 
   const [unlockCelebration, setUnlockCelebration] = useState<{
     show: boolean;
@@ -50,8 +37,8 @@ export function ZooPage({ animals, userStats, onUnlockAnimal }: ZooPageProps) {
   });
 
   const unlockedCount = animals.filter(a => a.isUnlocked).length;
-  const savingTarget = 10000;
-  const depositProgress = Math.min((userStats.totalSavings / savingTarget) * 100, 100);
+  const nextTarget = animals.find(a => !a.isUnlocked)?.unlockCondition.value ?? 10000;
+  const progress = Math.min((userStats.totalSavings / nextTarget) * 100, 100);
 
   const handleUnlockAnimal = (animal: Animal) => {
     onUnlockAnimal(animal.id);
@@ -63,130 +50,175 @@ export function ZooPage({ animals, userStats, onUnlockAnimal }: ZooPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24">
-      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 pt-12 pb-8 rounded-b-3xl shadow-lg">
-        <div className="flex items-center justify-between mb-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-32 relative">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 pt-16 pb-12 rounded-b-[3rem] shadow-lg relative overflow-hidden">
+        {/* Decorative Circles */}
+        <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-48 h-48 bg-blue-400/20 rounded-full blur-2xl" />
+
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between mb-8 relative z-10"
+        >
           <div>
-            <h1 className="text-2xl">Hero Center</h1>
+            <h1 className="text-3xl font-bold">Hero Collection</h1>
             <p className="text-blue-100 text-sm mt-1">
-              {unlockedCount} of {animals.length} heroes recruited
+              {unlockedCount} of {animals.length} legends recruited
             </p>
           </div>
-        </div>
+          <div className="bg-white/20 backdrop-blur-md p-3 rounded-2xl border border-white/20">
+            <Trophy className="w-6 h-6 text-yellow-300 shadow-sm" />
+          </div>
+        </motion.div>
 
-        <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm">Saving Bar</span>
-            <span className="text-sm">RM {userStats.totalSavings.toLocaleString()}</span>
+        {/* Progress Bar Card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white rounded-[2rem] p-6 shadow-xl border border-blue-100 relative z-10"
+        >
+          <div className="flex justify-between items-end mb-4">
+            <div>
+              <p className="text-gray-400 text-xs uppercase tracking-widest mb-1">Total Savings</p>
+              <h2 className="text-2xl font-bold text-gray-900">
+                RM {userStats.totalSavings.toLocaleString()}
+              </h2>
+            </div>
+            <div className="text-right">
+              <p className="text-emerald-500 text-xs font-bold uppercase tracking-widest mb-1">Progress</p>
+              <h2 className="text-xl font-bold text-gray-900">{Math.round(progress)}%</h2>
+            </div>
           </div>
-          <div className="text-xs text-gray-500 mb-3">
-            RM {userStats.totalSavings.toLocaleString()} saved of RM {savingTarget.toLocaleString()}
-          </div>
-          <div className="relative h-2 bg-white/20 rounded-full overflow-hidden">
-            <div
-              className="absolute inset-y-0 left-0 bg-yellow-300 rounded-full transition-all duration-500"
-              style={{ width: `${depositProgress}%` }}
+
+          <div className="relative h-3.5 bg-gray-100 rounded-full overflow-hidden border border-gray-50">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-emerald-500 shadow-[0_0_12px_rgba(52,211,153,0.3)]"
             />
           </div>
-        </div>
+          
+          <p className="text-gray-500 text-xs mt-4 flex items-center gap-2">
+            <Sparkles className="w-3 h-3 text-emerald-500" />
+            {progress >= 100 
+              ? "New hero ready to be claimed!" 
+              : `RM ${(nextTarget - userStats.totalSavings).toLocaleString()} more to next milestone`}
+          </p>
+        </motion.div>
       </div>
 
-      <div className="px-4 mt-5">
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 mb-6">
-          <div className="flex items-center justify-between mb-4 gap-4">
-            <div>
-              <h2 className="text-xl font-semibold">My Heroes for Claiming</h2>
-              <p className="text-sm text-gray-500 mt-1">Only these three heroes can be claimed by savings milestones.</p>
-            </div>
-            <div className="text-right text-sm text-gray-500">
-              <div>{animals.length - unlockedCount} heroes remaining</div>
-            </div>
-          </div>
+      {/* Hero List Section */}
+      <div className="px-6 mt-8 space-y-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="flex items-center justify-between"
+        >
+          <h2 className="text-lg font-semibold text-gray-800">Available Heroes</h2>
+          <Star className="w-5 h-5 text-amber-400/50" />
+        </motion.div>
 
-          <div className="grid grid-cols-1 gap-3">
-            {animals.map((animal) => {
-              const locked = !animal.isUnlocked;
-              const unlockable = canUnlock(animal);
+        <div className="grid grid-cols-1 gap-4">
+          {animals.map((animal, index) => {
+            const locked = !animal.isUnlocked;
+            const unlockable = canUnlock(animal);
 
-              return (
-                <div
-                  key={animal.id}
-                  className="rounded-3xl border border-gray-200 p-4 shadow-sm bg-slate-50"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-20 h-20 rounded-3xl overflow-hidden border ${locked ? 'border-gray-200 bg-gray-100' : 'border-emerald-200 bg-emerald-50'}`}>
+            return (
+              <motion.div
+                key={animal.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
+                className={`group relative rounded-[2rem] p-4 border transition-all duration-300 ${
+                  locked 
+                    ? 'bg-white border-gray-100 shadow-sm' 
+                    : 'bg-gradient-to-br from-emerald-50 to-white border-emerald-100 shadow-md'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className={`w-16 h-16 rounded-2xl overflow-hidden border-2 transition-transform duration-300 group-hover:scale-105 ${
+                        locked ? 'border-gray-100 grayscale' : 'border-emerald-200'
+                      }`}>
                         <img
-                          src={getAnimalImage(animal.id)}
+                          src={`/img/${animal.id}.jpg`}
                           alt={animal.name}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div>
-                        <p className="font-semibold text-gray-900">{animal.name}</p>
-                        <span className={`inline-flex items-center px-2 py-1 mt-1 rounded-full text-[10px] font-semibold ${getRarityColor(animal.rarity)}`}>
-                          {animal.rarity}
-                        </span>
-                      </div>
+                      {locked && !unlockable && (
+                        <div className="absolute inset-0 bg-white/40 flex items-center justify-center rounded-2xl">
+                          <Lock className="w-4 h-4 text-gray-400" />
+                        </div>
+                      )}
                     </div>
 
-                    <div className="text-right">
-                      {locked ? (
-                        unlockable ? (
-                          <button
-                            onClick={() => handleUnlockAnimal(animal)}
-                            className="rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-blue-700 transition"
-                          >
-                            Unlock
-                          </button>
-                        ) : (
-                          <div className="text-xs text-gray-500">Locked</div>
-                        )
-                      ) : (
-                        <div className="text-xs font-semibold text-emerald-700">Owned</div>
-                      )}
+                    <div>
+                      <p className={`font-bold ${locked ? 'text-gray-500' : 'text-gray-900'}`}>
+                        {animal.name}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider text-white shadow-sm bg-gradient-to-r ${getRarityStyles(animal.rarity)}`}>
+                          {animal.rarity}
+                        </span>
+                        {locked && (
+                          <span className="text-[9px] font-medium text-gray-400 flex items-center gap-1">
+                            Target: RM {animal.unlockCondition.value}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  {locked && (
-                    <div className="mt-3 p-3 rounded-2xl bg-white border border-gray-100 text-sm text-gray-600">
-                      <span className="inline-flex items-center gap-2">
-                        <Trophy className="w-4 h-4 text-purple-600" />
-                        Requires RM {animal.unlockCondition.value} total savings
-                      </span>
-                    </div>
-                  )}
+                  <div>
+                    {locked ? (
+                      unlockable ? (
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => handleUnlockAnimal(animal)}
+                          className="bg-blue-600 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all"
+                        >
+                          Claim
+                        </motion.button>
+                      ) : (
+                        <div className="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2 py-1 rounded-lg bg-gray-50 border border-gray-100">
+                          Locked
+                        </div>
+                      )
+                    ) : (
+                      <div className="flex flex-col items-end">
+                        <div className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center border border-emerald-200">
+                          <Star className="w-3.5 h-3.5 text-emerald-600 fill-emerald-600" />
+                        </div>
+                        <span className="text-[9px] font-bold text-emerald-600 mt-1 uppercase tracking-wider">Owned</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-3xl p-4 border border-blue-100 shadow-sm">
-          <div className="flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-blue-600 mt-1" />
-            <div>
-              <p className="text-sm font-semibold text-blue-800">Simple Hero View</p>
-              <p className="text-xs text-blue-700">This page now focuses on the progress bar and the hero claim list only.</p>
-            </div>
-          </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 
-      <CelebrationModal
-        show={celebrationData.show}
-        message={celebrationData.message}
-        reward={celebrationData.reward}
-        emoji={celebrationData.emoji}
-        onClose={() => setCelebrationData({ ...celebrationData, show: false })}
-      />
-
-      <AnimalUnlockCelebration
-        show={unlockCelebration.show}
-        animalEmoji={unlockCelebration.emoji}
-        animalName={unlockCelebration.name}
-        onClose={() => setUnlockCelebration({ ...unlockCelebration, show: false })}
-      />
+      <AnimatePresence>
+        {unlockCelebration.show && (
+          <AnimalUnlockCelebration
+            show={unlockCelebration.show}
+            animalEmoji={unlockCelebration.emoji}
+            animalName={unlockCelebration.name}
+            onClose={() => setUnlockCelebration({ ...unlockCelebration, show: false })}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
