@@ -303,7 +303,7 @@ export function InsightsPage({ insights, spendingBreakdown, userStats, goal, tra
                     onClick={onAddTransaction}
                     className="w-full mt-1 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl min-h-11 py-2 text-sm border border-gray-200 transition-colors"
                   >
-                    Send Money
+                    Add Spending
                   </button>
                 )}
               </div>

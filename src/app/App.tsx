@@ -4,6 +4,7 @@ import { ZooPage } from './components/ZooPage';
 import { InsightsPage } from './components/InsightsPage';
 import { AddTransactionPage } from './components/AddTransactionPage';
 import { AddDepositPage } from './components/AddDepositPage.tsx';
+import { AddSpendingPage } from './components/AddSpendingPage.tsx';
 import { ProfilePage } from './components/ProfilePage';
 import { BottomNav } from './components/BottomNav';
 import {
@@ -24,6 +25,7 @@ export default function App() {
   const [userStats, setUserStats] = useState<UserStats>(mockUserStats);
   const [showSendMoney, setShowSendMoney] = useState(false);
   const [showAddDeposit, setShowAddDeposit] = useState(false);
+  const [showAddSpending, setShowAddSpending] = useState(false);
   const [theme, setTheme] = useState('emerald');
   const [insights, setInsights] = useState<AIInsight[]>(mockAIInsights);
 
@@ -175,6 +177,7 @@ export default function App() {
           topInsight={insights[0]}
           onNavigateToDeposit={() => setShowAddDeposit(true)}
           onNavigateToTransaction={() => setShowSendMoney(true)}
+          onNavigateToSpending={() => setShowAddSpending(true)}
           onAddSpending={handleAddSpending}
           theme={currentTheme}
         />
@@ -195,7 +198,7 @@ export default function App() {
           userStats={userStats}
           goal={mockGoal}
           transactions={transactions}
-          onAddTransaction={() => setShowSendMoney(true)}
+          onAddTransaction={() => setShowAddSpending(true)}
         />
       )}
 
@@ -241,6 +244,27 @@ export default function App() {
                   ✕
                 </button>
                 <AddDepositPage goal={mockGoal} onAddDeposit={handleAddDeposit} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAddSpending && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
+          <div className="absolute inset-0 overflow-y-auto">
+            <div className="min-h-screen flex items-end sm:items-center justify-center py-10">
+              <div className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
+                <button
+                  onClick={() => setShowAddSpending(false)}
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
+                >
+                  ✕
+                </button>
+                <AddSpendingPage 
+                  onAddSpending={handleAddSpending} 
+                  onClose={() => setShowAddSpending(false)} 
+                />
               </div>
             </div>
           </div>

@@ -13,32 +13,18 @@ interface HomePageProps {
   topInsight: AIInsight;
   onNavigateToDeposit?: () => void;
   onNavigateToTransaction?: () => void;
+  onNavigateToSpending?: () => void;
   onAddSpending?: (transaction: { amount: number; category: string; description: string }) => void;
   theme: ColorTheme;
 }
 
-export function HomePage({ goal, animals, userStats, topInsight, onNavigateToDeposit, onNavigateToTransaction, onAddSpending, theme }: HomePageProps) {
+export function HomePage({ goal, animals, userStats, topInsight, onNavigateToDeposit, onNavigateToTransaction, onNavigateToSpending, onAddSpending, theme }: HomePageProps) {
   const [showStreakCelebration, setShowStreakCelebration] = useState(false);
-  const [showAddSpending, setShowAddSpending] = useState(false);
-  const [spendingCategory, setSpendingCategory] = useState('Food');
-  const [spendingAmount, setSpendingAmount] = useState('');
-  const [spendingDescription, setSpendingDescription] = useState('');
 
   const progressPercentage = (userStats.totalSavings / goal.targetAmount) * 100;
 
   const handleAddSpending = () => {
-    const amount = parseFloat(spendingAmount);
-    if (!onAddSpending || isNaN(amount) || amount <= 0) return;
-
     setShowStreakCelebration(true);
-    onAddSpending({
-      amount,
-      category: spendingCategory,
-      description: spendingDescription,
-    });
-    setShowAddSpending(false);
-    setSpendingAmount('');
-    setSpendingDescription('');
   };
 
   const getStreakFireColor = (streak: number) => {
@@ -112,9 +98,9 @@ export function HomePage({ goal, animals, userStats, topInsight, onNavigateToDep
             </motion.span>
           </motion.div>
 
-          {onAddSpending && (
+          {onNavigateToSpending && (
             <motion.button
-              onClick={() => setShowAddSpending(true)}
+              onClick={onNavigateToSpending}
               className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm hover:bg-white/30 active:scale-95 transition-all shadow-lg"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -263,80 +249,6 @@ export function HomePage({ goal, animals, userStats, topInsight, onNavigateToDep
         streak={userStats.streak}
         onClose={() => setShowStreakCelebration(false)}
       />
-
-      {showAddSpending && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
-          <div className="absolute inset-0 overflow-y-auto">
-            <div className="min-h-screen flex items-end sm:items-center justify-center py-10">
-              <div className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
-                <button
-                  onClick={() => setShowAddSpending(false)}
-                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
-                >
-                  ✕
-                </button>
-                <div className="px-6 pt-6 pb-8">
-                  <h1 className="text-2xl text-gray-900 mb-2">Add Spending</h1>
-                  <p className="text-sm text-gray-500 mb-4">Choose a category and log your spending to keep your streak rolling.</p>
-
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Category</p>
-                      <div className="grid grid-cols-2 gap-2">
-                        {spendingCategories.map((category) => (
-                          <button
-                            key={category}
-                            type="button"
-                            onClick={() => setSpendingCategory(category)}
-                            className={`rounded-2xl border px-4 py-3 text-sm text-left transition-all ${
-                              spendingCategory === category
-                                ? 'border-blue-500 bg-blue-50 text-blue-700'
-                                : 'border-gray-200 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50/50'
-                            }`}
-                          >
-                            {category}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-xs text-gray-500 uppercase tracking-wide mb-2 block">Amount (RM)</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={spendingAmount}
-                        onChange={(e) => setSpendingAmount(e.target.value)}
-                        placeholder="0.00"
-                        className="w-full rounded-2xl border border-gray-200 px-4 py-4 text-xl text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs text-gray-500 uppercase tracking-wide mb-2 block">Note (Optional)</label>
-                      <input
-                        type="text"
-                        value={spendingDescription}
-                        onChange={(e) => setSpendingDescription(e.target.value)}
-                        placeholder="e.g., Lunch, bus fare"
-                        className="w-full rounded-2xl border border-gray-200 px-4 py-4 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                      />
-                    </div>
-
-                    <button
-                      onClick={handleAddSpending}
-                      disabled={!spendingAmount || parseFloat(spendingAmount) <= 0}
-                      className="w-full py-4 rounded-2xl shadow-lg bg-gradient-to-r from-blue-600 to-blue-500 text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Add Spending
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
