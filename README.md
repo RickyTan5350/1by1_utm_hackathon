@@ -8,4 +8,6 @@
   Run `npm i` to install the dependencies.
 
   Run `npm run dev` to start the development server.
-  
+
+  Deployment Link: https://1by1-utm-hackathon.vercel.app/
+  Click the link above to see prototype.
