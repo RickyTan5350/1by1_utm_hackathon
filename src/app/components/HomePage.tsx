@@ -185,31 +185,53 @@ export function HomePage({ goal, animals, userStats, topInsight, onNavigateToDep
         </motion.div>
 
         {/* Stats Card */}
+        {/* Current Goal Card */}
         <motion.div
-          className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-5"
+          className="bg-white rounded-[2rem] shadow-lg border border-gray-100 mb-5 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 text-emerald-600" />
+          {/* Top Image Section */}
+          <div className="relative h-44 bg-gray-900">
+            <img 
+              src="/img/iphone17.png" 
+              alt={goal.name} 
+              className="w-full h-full object-cover opacity-70"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+            <div className="absolute bottom-5 left-6 text-white">
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="w-5 h-5 rounded-full border-2 border-white/80 flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-white" />
                 </div>
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">Current Goal</span>
               </div>
-              <p className="text-xl text-emerald-600">RM {userStats.totalSavings.toLocaleString()}</p>
-              <p className="text-xs text-gray-500 mt-1">Total Saved</p>
+              <h2 className="text-2xl font-bold">{goal.name}</h2>
+            </div>
+          </div>
+
+          {/* Bottom Stats Section */}
+          <div className="p-6">
+            <div className="flex justify-between items-end mb-4">
+              <div>
+                <p className="text-2xl font-bold text-emerald-600">RM {userStats.totalSavings.toLocaleString()}</p>
+                <p className="text-sm text-gray-400 mt-0.5">of RM {goal.targetAmount.toLocaleString()}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-gray-900">{Math.round(progressPercentage)}%</p>
+                <p className="text-xs text-gray-400 mt-0.5">{goal.estimatedDays} days left</p>
+              </div>
             </div>
 
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-purple-600" />
-                </div>
-              </div>
-              <p className="text-xl text-purple-600">{userStats.animalsCollected}</p>
-              <p className="text-xs text-gray-500 mt-1">Heroes Recruited</p>
+            {/* Progress Bar */}
+            <div className="h-3.5 w-full bg-gray-100 rounded-full overflow-hidden">
+              <motion.div 
+                className="h-full bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.4)]"
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPercentage}%` }}
+                transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+              />
             </div>
           </div>
         </motion.div>
