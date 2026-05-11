@@ -5,19 +5,19 @@ A modern finance app that blends real-time budgeting, goal reminders, and playfu
 
 Main Functions:
 1. AI Financial Coach
-Personalized money guidance powered by AI
-Tracks spending habits and suggests smarter choices
-Learns from your behavior to keep recommendations relevant
+- Personalized money guidance powered by AI
+- Tracks spending habits and suggests smarter choices
+- Learns from your behavior to keep recommendations relevant
 
 3. Gamification hero section
-Turn financial progress into daily streaks
-Earn new heroes for consistency, saving, and good spending habits
-Makes habit tracking feel like a game, not a chore
+- Turn financial progress into daily streaks
+- Earn new heroes for consistency, saving, and good spending habits
+- Makes habit tracking feel like a game, not a chore
 
 4. Goal reminder functions
-Set daily, weekly, or custom product goals
-Receive timely nudges to keep you on track
-Keeps progress front-and-center so you don’t lose momentum
+- Set daily, weekly, or custom product goals
+- Receive timely nudges to keep you on track
+- Keeps progress front-and-center so you don’t lose momentum
 
 ## Running the code
 
