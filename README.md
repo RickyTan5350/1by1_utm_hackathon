@@ -1,13 +1,28 @@
+# PixPay Wallet Intro
 
-  # Financial Habit Tracking App
+PixPay is your smart wallet for faster habit-building money management.
+A modern finance app that blends real-time budgeting, goal reminders, and playful gamification into one friendly digital wallet.
 
-  This is a code bundle for Financial Habit Tracking App. The original project is available at https://www.figma.com/design/B1JMZNEDemvw4hGTb8dFUc/Financial-Habit-Tracking-App.
+Main Functions:
+1. AI Financial Coach
+Personalized money guidance powered by AI
+Tracks spending habits and suggests smarter choices
+Learns from your behavior to keep recommendations relevant
 
-  ## Running the code
+3. Gamification hero section
+Turn financial progress into daily streaks
+Earn new heroes for consistency, saving, and good spending habits
+Makes habit tracking feel like a game, not a chore
 
-  Run `npm i` to install the dependencies.
+4. Goal reminder functions
+Set daily, weekly, or custom product goals
+Receive timely nudges to keep you on track
+Keeps progress front-and-center so you don’t lose momentum
 
-  Run `npm run dev` to start the development server.
+## Running the code
 
-  Deployment Link: https://1by1-utm-hackathon.vercel.app/
-  Click the link above to see prototype.
+Run `npm i` to install the dependencies.
+Run `npm run dev` to start the development server.
+
+Deployment Link: https://1by1-utm-hackathon.vercel.app/ 
+Click the link to see prototype.
